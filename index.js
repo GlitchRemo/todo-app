@@ -5,14 +5,12 @@ const getReadTaskSection = () => document.querySelector(".input-task");
 const getTaskElement = (checkBox) =>
   checkBox.parentElement.querySelector("span");
 
+const hasMarked = (task) => task.style.backgroundColor === "red";
+
 const onTaskComplete = (checkBox) => {
   const task = getTaskElement(checkBox);
-  if (task.style.backgroundColor === "red") {
-    task.style.backgroundColor = "";
-    return;
-  }
-
-  task.style.backgroundColor = "red";
+  const bgColor = hasMarked(task) ? "" : "red";
+  task.style.backgroundColor = bgColor;
 };
 
 const createCheckBox = () => {
