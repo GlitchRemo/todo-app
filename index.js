@@ -4,7 +4,7 @@ const getReadTaskSection = () => document.querySelector(".input-task");
 
 const getTaskElement = (checkBox) => checkBox.parentElement.querySelector("p");
 
-const hasMarked = (task) => task.style.backgroundColor === "red";
+const hasMarked = (task) => task.style.backgroundColor === "green";
 
 const onTaskComplete = (checkBox) => {
   const task = getTaskElement(checkBox);
