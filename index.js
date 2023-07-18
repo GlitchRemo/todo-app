@@ -1,4 +1,4 @@
-const getTasksContainer = () => document.querySelector("#tasks-container");
+const getMainSection = () => document.querySelector("#main-section");
 
 const getReadTaskSection = () => document.querySelector(".input-task");
 
@@ -37,19 +37,27 @@ const onNewTask = () => {
   const taskText = readTaskSection.value;
 
   const taskElement = createTaskElement(taskText);
-  const tasksContainer = getTasksContainer();
+  const tasksContainer = getMainSection();
   tasksContainer.appendChild(taskElement);
 };
 
-const createAddTaskSection = () => {
-  const taskSection = document.createElement("section");
-  const readTaskSection = document.createElement("input");
-  readTaskSection.classList.add("input-task");
+const createAddButton = () => {
   const addButton = document.createElement("input");
 
   addButton.type = "button";
   addButton.value = "Add";
   addButton.onclick = onNewTask;
+
+  return addButton;
+};
+
+const createAddTaskSection = () => {
+  const taskSection = document.createElement("section");
+
+  const readTaskSection = document.createElement("input");
+  readTaskSection.classList.add("input-task");
+
+  const addButton = createAddButton();
 
   taskSection.appendChild(readTaskSection);
   taskSection.appendChild(addButton);
@@ -58,9 +66,9 @@ const createAddTaskSection = () => {
 };
 
 const main = () => {
-  const tasksContainer = getTasksContainer();
+  const mainSection = getMainSection();
   const addTaskSection = createAddTaskSection();
-  tasksContainer.appendChild(addTaskSection);
+  mainSection.appendChild(addTaskSection);
 };
 
 window.onload = main;
