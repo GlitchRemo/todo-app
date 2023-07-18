@@ -18,7 +18,7 @@ const main = () => {
 
   const tasksContainer = getTasksContainer();
   const taskElements = tasks.map(createTaskElement);
-  taskElements.map((task) => tasksContainer.appendChild(task));
+  taskElements.forEach((task) => tasksContainer.appendChild(task));
 };
 
 window.onload = main;
