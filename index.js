@@ -2,17 +2,31 @@ const getTasksContainer = () => document.querySelector("#tasks-container");
 
 const getReadTaskSection = () => document.querySelector(".input-task");
 
+const getTaskElement = (checkBox) =>
+  checkBox.parentElement.querySelector("span");
+
+const onTaskComplete = (checkBox) => {
+  const task = getTaskElement(checkBox);
+  task.style.backgroundColor = "red";
+};
+
+const createCheckBox = () => {
+  const checkBox = document.createElement("input");
+  checkBox.type = "button";
+  checkBox.onclick = () => onTaskComplete(checkBox);
+  return checkBox;
+};
+
 const createTaskElement = (taskText) => {
-  const taskContainer = document.createElement("section");
-  const checkButton = document.createElement("input");
-  checkButton.type = "button";
+  const taskElement = document.createElement("section");
   const task = document.createElement("span");
+  const checkBox = createCheckBox();
 
   task.innerText = taskText;
-  taskContainer.appendChild(checkButton);
-  taskContainer.appendChild(task);
+  taskElement.appendChild(checkBox);
+  taskElement.appendChild(task);
 
-  return taskContainer;
+  return taskElement;
 };
 
 const onNewTask = () => {
