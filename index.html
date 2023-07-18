@@ -1,9 +1,31 @@
 <html>
   <head>
     <script src="./index.js"></script>
+    <style>
+      #page {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #main-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+      }
+
+      .task {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    </style>
   </head>
   <body>
-    <h1>Todo</h1>
-    <main id="main-section"></main>
+    <main id="page">
+      <h1>Todo</h1>
+      <section id="main-section"></section>
+    </main>
   </body>
 </html>

@@ -2,32 +2,36 @@ const getMainSection = () => document.querySelector("#main-section");
 
 const getReadTaskSection = () => document.querySelector(".input-task");
 
-const getTaskElement = (checkBox) =>
-  checkBox.parentElement.querySelector("span");
+const getTaskElement = (checkBox) => checkBox.parentElement.querySelector("p");
 
 const hasMarked = (task) => task.style.backgroundColor === "red";
 
 const onTaskComplete = (checkBox) => {
   const task = getTaskElement(checkBox);
-  const bgColor = hasMarked(task) ? "" : "red";
+  const bgColor = hasMarked(task) ? "" : "green";
   task.style.backgroundColor = bgColor;
 };
 
 const createCheckBox = () => {
   const checkBox = document.createElement("input");
+
   checkBox.type = "button";
+  checkBox.value = "done";
+  checkBox.classList.add("checkbox");
   checkBox.onclick = () => onTaskComplete(checkBox);
+
   return checkBox;
 };
 
 const createTaskElement = (taskText) => {
   const taskElement = document.createElement("section");
-  const task = document.createElement("span");
+  const task = document.createElement("p");
   const checkBox = createCheckBox();
 
   task.innerText = taskText;
-  taskElement.appendChild(checkBox);
   taskElement.appendChild(task);
+  taskElement.appendChild(checkBox);
+  taskElement.classList.add("task");
 
   return taskElement;
 };
