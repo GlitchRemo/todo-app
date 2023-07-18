@@ -7,6 +7,11 @@ const getTaskElement = (checkBox) =>
 
 const onTaskComplete = (checkBox) => {
   const task = getTaskElement(checkBox);
+  if (task.style.backgroundColor === "red") {
+    task.style.backgroundColor = "";
+    return;
+  }
+
   task.style.backgroundColor = "red";
 };
 
@@ -59,4 +64,5 @@ const main = () => {
   const addTaskSection = createAddTaskSection();
   tasksContainer.appendChild(addTaskSection);
 };
+
 window.onload = main;
