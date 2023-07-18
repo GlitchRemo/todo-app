@@ -3,13 +3,16 @@ const getTasksContainer = () => document.querySelector("#tasks-container");
 const getReadTaskSection = () => document.querySelector(".input-task");
 
 const createTaskElement = (taskText) => {
-  const itemContainer = document.createElement("section");
+  const taskContainer = document.createElement("section");
+  const checkButton = document.createElement("input");
+  checkButton.type = "button";
   const task = document.createElement("span");
 
   task.innerText = taskText;
-  itemContainer.appendChild(task);
+  taskContainer.appendChild(checkButton);
+  taskContainer.appendChild(task);
 
-  return itemContainer;
+  return taskContainer;
 };
 
 const onNewTask = () => {
