@@ -1,24 +1,45 @@
 const getTasksContainer = () => document.querySelector("#tasks-container");
 
+const getReadTaskSection = () => document.querySelector(".input-task");
+
 const createTaskElement = (taskText) => {
   const itemContainer = document.createElement("section");
   const task = document.createElement("span");
+
   task.innerText = taskText;
   itemContainer.appendChild(task);
+
   return itemContainer;
 };
 
-const main = () => {
-  const tasks = [
-    "Buy eggs from supermarket.",
-    "Finish Code Of Conduct training on campus.",
-    "Finish day 15 part 2 of Advent of Code problem.",
-    "Fill timesheet.",
-  ];
+const onNewTask = () => {
+  const readTaskSection = getReadTaskSection();
+  const taskText = readTaskSection.value;
 
+  const taskElement = createTaskElement(taskText);
   const tasksContainer = getTasksContainer();
-  const taskElements = tasks.map(createTaskElement);
-  taskElements.forEach((task) => tasksContainer.appendChild(task));
+  tasksContainer.appendChild(taskElement);
 };
 
+const createAddTaskSection = () => {
+  const taskSection = document.createElement("section");
+  const readTaskSection = document.createElement("input");
+  readTaskSection.classList.add("input-task");
+  const addButton = document.createElement("input");
+
+  addButton.type = "button";
+  addButton.value = "Add";
+  addButton.onclick = onNewTask;
+
+  taskSection.appendChild(readTaskSection);
+  taskSection.appendChild(addButton);
+
+  return taskSection;
+};
+
+const main = () => {
+  const tasksContainer = getTasksContainer();
+  const addTaskSection = createAddTaskSection();
+  tasksContainer.appendChild(addTaskSection);
+};
 window.onload = main;
