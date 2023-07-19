@@ -29,6 +29,10 @@ class Todo {
     this.#done = !this.#done;
   }
 
+  isDone() {
+    return this.#done;
+  }
+
   get value() {
     return this.#value;
   }
@@ -48,8 +52,8 @@ class Todos {
   }
 
   addTodo(value) {
-    const todo = new Todo(value, this.#id++);
-    this.#todos[this.#id] = todo;
+    const todo = new Todo(value, this.#id);
+    this.#todos[this.#id++] = todo;
   }
 
   markOrUnmarkTodo(id) {
@@ -119,32 +123,33 @@ class MouseController {
 
 class TodosViewer {
   #todosContainer;
-  #checkboxId;
 
   constructor(todosContainer) {
     this.#todosContainer = todosContainer;
-    this.#checkboxId = 1;
   }
 
-  #createCheckbox() {
+  #createCheckbox(id) {
     const checkBox = document.createElement("input");
 
     checkBox.type = "button";
     checkBox.value = "done";
     checkBox.classList.add("checkbox");
-    checkBox.id = this.#checkboxId++;
+    checkBox.id = id;
 
     return checkBox;
   }
 
-  #createTodoElement(todoText) {
+  #createTodoElement(todo) {
     const todoElement = document.createElement("section");
-    const todo = document.createElement("p");
-    const checkBox = this.#createCheckbox();
+    const todoMessage = document.createElement("p");
+    const checkbox = this.#createCheckbox(todo.id);
 
-    todo.innerText = todoText;
-    todoElement.appendChild(todo);
-    todoElement.appendChild(checkBox);
+    const textDecoration = todo.isDone() ? "line-through" : "none";
+    todoMessage.style.textDecoration = textDecoration;
+
+    todoMessage.innerText = todo.value;
+    todoElement.appendChild(todoMessage);
+    todoElement.appendChild(checkbox);
     todoElement.classList.add("todo");
 
     return todoElement;
@@ -160,7 +165,7 @@ class TodosViewer {
     this.#removeTodos();
 
     todos.forEach((todo) => {
-      const todoElement = this.#createTodoElement(todo.value);
+      const todoElement = this.#createTodoElement(todo);
       this.#todosContainer.appendChild(todoElement);
     });
   }
