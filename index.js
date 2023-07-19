@@ -1,4 +1,4 @@
-const gettodosContainer = () => document.querySelector("#todos-container");
+const getTodosContainer = () => document.querySelector("#todos-container");
 
 const getInputBox = () => document.querySelector("#input-box");
 
@@ -52,32 +52,95 @@ class Todos {
     this.#todos[this.#id] = todo;
   }
 
+  markOrUnmarkTodo(id) {
+    this.#todos[id].changeStatus();
+  }
+
   getTodos() {
     return Object.values(this.#todos);
   }
 }
 
-class TodoViewer {
-  #todosContainer;
+class TodoController {
+  #todos;
+  #viewer;
+  #inputController;
 
-  constructor(todosContainer) {
+  constructor(todos, viewer, inputController) {
+    this.#todos = todos;
+    this.#viewer = viewer;
+    this.#inputController = inputController;
+  }
+
+  #onNewTodo(todoMessage) {
+    this.#todos.addTodo(todoMessage);
+    this.#viewer.render(this.#todos.getTodos());
+  }
+
+  #onMarkOrUnmark(id) {
+    this.#todos.markOrUnmarkTodo(id);
+    this.#viewer.render(this.#todos.getTodos());
+  }
+
+  start() {
+    this.#inputController.onNewTodo((message) => this.#onNewTodo(message));
+    this.#inputController.onMarkOrUnmark((id) => this.#onMarkOrUnmark(id));
+  }
+}
+
+class MouseController {
+  #addButtonElement;
+  #todosContainer;
+  #inputboxElement;
+
+  constructor(addButtonElement, inputboxElement, todosContainer) {
+    this.#addButtonElement = addButtonElement;
+    this.#inputboxElement = inputboxElement;
     this.#todosContainer = todosContainer;
   }
 
-  #createCheckBox() {
+  onNewTodo(listener) {
+    this.#addButtonElement.onclick = () => {
+      const todoMessage = this.#inputboxElement.value;
+      listener(todoMessage);
+    };
+  }
+
+  onMarkOrUnmark(listener) {
+    this.#todosContainer.onclick = (event) => {
+      const checkbox = event.target;
+
+      if (checkbox.className === "checkbox") {
+        listener(checkbox.id);
+      }
+    };
+  }
+}
+
+class TodosViewer {
+  #todosContainer;
+  #checkboxId;
+
+  constructor(todosContainer) {
+    this.#todosContainer = todosContainer;
+    this.#checkboxId = 1;
+  }
+
+  #createCheckbox() {
     const checkBox = document.createElement("input");
 
     checkBox.type = "button";
     checkBox.value = "done";
     checkBox.classList.add("checkbox");
+    checkBox.id = this.#checkboxId++;
 
     return checkBox;
   }
 
-  #createtodoElement(todoText) {
+  #createTodoElement(todoText) {
     const todoElement = document.createElement("section");
     const todo = document.createElement("p");
-    const checkBox = this.#createCheckBox();
+    const checkBox = this.#createCheckbox();
 
     todo.innerText = todoText;
     todoElement.appendChild(todo);
@@ -97,25 +160,32 @@ class TodoViewer {
     this.#removeTodos();
 
     todos.forEach((todo) => {
-      const todoElement = this.#createtodoElement(todo.value);
+      const todoElement = this.#createTodoElement(todo.value);
       this.#todosContainer.appendChild(todoElement);
     });
   }
 }
 
 const main = () => {
-  const todos = new Todos();
-  const todosContainer = gettodosContainer();
-  const todoViewer = new TodoViewer(todosContainer);
-
+  const todosContainer = getTodosContainer();
   const addButton = getAddButton();
+  const inputBox = getInputBox();
 
-  addButton.onclick = () => {
-    const inputBox = getInputBox();
-    const todoText = inputBox.value;
-    todos.addTodo(todoText);
-    todoViewer.render(todos.getTodos());
-  };
+  const todos = new Todos();
+  const todosViewer = new TodosViewer(todosContainer);
+  const mouseController = new MouseController(
+    addButton,
+    inputBox,
+    todosContainer
+  );
+
+  const todoController = new TodoController(
+    todos,
+    todosViewer,
+    mouseController
+  );
+
+  todoController.start();
 };
 
 window.onload = main;

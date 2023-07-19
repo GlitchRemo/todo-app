@@ -14,7 +14,7 @@
 
 - todoController
 
-  - data: todoList, inputController, todotodoViewer, todoId
+  - data: todoList, inputController, todotodosViewer, todoId
   - methods
     - start
       // add onNewtodo listener
@@ -30,7 +30,7 @@
     - onNewtodo
     - ontodoDone
 
-- todotodoViewer
+- todotodosViewer
   - data: todosContainer
     Method:
   - render
