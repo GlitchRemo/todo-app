@@ -1,3 +1,2 @@
-.*sw.
-DS.*
-TODO.*
+node_modules
+
