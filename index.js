@@ -1,31 +1,15 @@
-const getTodosContainer = () => document.querySelector("#todos-container");
-
-const getInputBox = () => document.querySelector("#input-box");
-
-const getAddButton = () => document.querySelector("#add-button");
-
-const gettodoElement = (checkBox) => checkBox.parentElement.querySelector("p");
-
-const hasMarked = (todo) => todo.style.backgroundColor === "green";
-
-const ontodoComplete = (checkBox) => {
-  const todo = gettodoElement(checkBox);
-  const bgColor = hasMarked(todo) ? "" : "green";
-  todo.style.backgroundColor = bgColor;
-};
-
 class Todo {
-  #value;
+  #description;
   #id;
   #done;
 
-  constructor(value, id) {
-    this.#value = value;
+  constructor(description, id) {
+    this.#description = description;
     this.#id = id;
     this.#done = false;
   }
 
-  changeStatus() {
+  toggleDoneStatus() {
     this.#done = !this.#done;
   }
 
@@ -33,8 +17,12 @@ class Todo {
     return this.#done;
   }
 
-  get value() {
-    return this.#value;
+  get description() {
+    return this.#description;
+  }
+
+  get asciiValue() {
+    return this.#description.charCodeAt();
   }
 
   get id() {
@@ -45,23 +33,39 @@ class Todo {
 class Todos {
   #todos;
   #id;
+  #isSorted;
 
   constructor() {
     this.#id = 1;
+    this.#isSorted = false;
     this.#todos = {};
   }
 
-  addTodo(value) {
-    const todo = new Todo(value, this.#id);
+  isSorted() {
+    return this.#isSorted;
+  }
+
+  toggleSortStatus() {
+    this.#isSorted = !this.#isSorted;
+  }
+
+  addTodo(description) {
+    const todo = new Todo(description, this.#id);
     this.#todos[this.#id++] = todo;
   }
 
   markOrUnmarkTodo(id) {
-    this.#todos[id].changeStatus();
+    this.#todos[id].toggleDoneStatus();
   }
 
   getTodos() {
-    return Object.values(this.#todos);
+    return Object.values(this.#todos); //TODO: make a fn to provide this
+  }
+
+  getSortedTodos() {
+    return Object.values(this.#todos).sort(
+      (a, b) => a.asciiValue - b.asciiValue
+    );
   }
 }
 
@@ -76,19 +80,31 @@ class TodoController {
     this.#inputController = inputController;
   }
 
+  #getTodos() {
+    return this.#todos.isSorted()
+      ? this.#todos.getSortedTodos()
+      : this.#todos.getTodos();
+  }
+
   #onNewTodo(todoMessage) {
     this.#todos.addTodo(todoMessage);
-    this.#viewer.render(this.#todos.getTodos());
+    this.#viewer.render(this.#getTodos());
   }
 
   #onMarkOrUnmark(id) {
     this.#todos.markOrUnmarkTodo(id);
-    this.#viewer.render(this.#todos.getTodos());
+    this.#viewer.render(this.#getTodos());
+  }
+
+  #onSort() {
+    this.#todos.toggleSortStatus();
+    this.#viewer.render(this.#getTodos());
   }
 
   start() {
     this.#inputController.onNewTodo((message) => this.#onNewTodo(message));
     this.#inputController.onMarkOrUnmark((id) => this.#onMarkOrUnmark(id));
+    this.#inputController.onSort(() => this.#onSort());
   }
 }
 
@@ -96,11 +112,13 @@ class MouseController {
   #addButtonElement;
   #todosContainer;
   #inputboxElement;
+  #sortButton;
 
-  constructor(addButtonElement, inputboxElement, todosContainer) {
+  constructor(addButtonElement, inputboxElement, todosContainer, sortButton) {
     this.#addButtonElement = addButtonElement;
     this.#inputboxElement = inputboxElement;
     this.#todosContainer = todosContainer;
+    this.#sortButton = sortButton;
   }
 
   onNewTodo(listener) {
@@ -117,6 +135,12 @@ class MouseController {
       if (checkbox.className === "checkbox") {
         listener(checkbox.id);
       }
+    };
+  }
+
+  onSort(listener) {
+    this.#sortButton.onclick = () => {
+      listener();
     };
   }
 }
@@ -151,7 +175,7 @@ class TodosViewer {
 
     if (todo.isDone()) this.#changeStyleOnCheck(todoMessage, checkbox);
 
-    todoMessage.innerText = todo.value;
+    todoMessage.innerText = todo.description;
     todoElement.appendChild(todoMessage);
     todoElement.appendChild(checkbox);
     todoElement.classList.add("todo");
@@ -175,17 +199,24 @@ class TodosViewer {
   }
 }
 
+const getTodosContainer = () => document.querySelector("#todos-container");
+const getInputBox = () => document.querySelector("#input-box");
+const getAddButton = () => document.querySelector("#add-button");
+const getSortButton = () => document.querySelector("#sort-button");
+
 const main = () => {
   const todosContainer = getTodosContainer();
   const addButton = getAddButton();
   const inputBox = getInputBox();
+  const sortButton = getSortButton();
 
   const todos = new Todos();
   const todosViewer = new TodosViewer(todosContainer);
   const mouseController = new MouseController(
     addButton,
     inputBox,
-    todosContainer
+    todosContainer,
+    sortButton
   );
 
   const todoController = new TodoController(
