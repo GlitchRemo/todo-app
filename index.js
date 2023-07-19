@@ -1,20 +1,20 @@
-const getTasksContainer = () => document.querySelector("#tasks-container");
+const gettodosContainer = () => document.querySelector("#todos-container");
 
 const getInputBox = () => document.querySelector("#input-box");
 
 const getAddButton = () => document.querySelector("#add-button");
 
-const getTaskElement = (checkBox) => checkBox.parentElement.querySelector("p");
+const gettodoElement = (checkBox) => checkBox.parentElement.querySelector("p");
 
-const hasMarked = (task) => task.style.backgroundColor === "green";
+const hasMarked = (todo) => todo.style.backgroundColor === "green";
 
-const onTaskComplete = (checkBox) => {
-  const task = getTaskElement(checkBox);
-  const bgColor = hasMarked(task) ? "" : "green";
-  task.style.backgroundColor = bgColor;
+const ontodoComplete = (checkBox) => {
+  const todo = gettodoElement(checkBox);
+  const bgColor = hasMarked(todo) ? "" : "green";
+  todo.style.backgroundColor = bgColor;
 };
 
-class Task {
+class Todo {
   #value;
   #id;
   #done;
@@ -38,31 +38,30 @@ class Task {
   }
 }
 
-class Tasks {
-  #tasks;
+class Todos {
+  #todos;
   #id;
 
   constructor() {
     this.#id = 1;
-    this.#tasks = [];
+    this.#todos = {};
   }
 
-  addTask(value) {
-    const task = new Task(value, this.#id);
-    this.#id++;
-    this.#tasks.push(task);
+  addTodo(value) {
+    const todo = new Todo(value, this.#id++);
+    this.#todos[this.#id] = todo;
   }
 
-  getTasks() {
-    console.log(this.#tasks);
-    return this.#tasks;
+  getTodos() {
+    return Object.values(this.#todos);
   }
 }
 
-class ViewTask {
-  #tasksContainer;
-  constructor(tasksContainer) {
-    this.#tasksContainer = tasksContainer;
+class TodoViewer {
+  #todosContainer;
+
+  constructor(todosContainer) {
+    this.#todosContainer = todosContainer;
   }
 
   #createCheckBox() {
@@ -75,40 +74,47 @@ class ViewTask {
     return checkBox;
   }
 
-  #createTaskElement(taskText) {
-    const taskElement = document.createElement("section");
-    const task = document.createElement("p");
+  #createtodoElement(todoText) {
+    const todoElement = document.createElement("section");
+    const todo = document.createElement("p");
     const checkBox = this.#createCheckBox();
 
-    task.innerText = taskText;
-    taskElement.appendChild(task);
-    taskElement.appendChild(checkBox);
-    taskElement.classList.add("task");
+    todo.innerText = todoText;
+    todoElement.appendChild(todo);
+    todoElement.appendChild(checkBox);
+    todoElement.classList.add("todo");
 
-    return taskElement;
+    return todoElement;
   }
 
-  render(tasks) {
-    tasks.forEach((task) => {
-      console.log(task.value);
-      const taskElement = this.#createTaskElement(task.value);
-      this.#tasksContainer.appendChild(taskElement);
+  #removeTodos() {
+    [...this.#todosContainer.children].forEach((child) =>
+      this.#todosContainer.removeChild(child)
+    );
+  }
+
+  render(todos) {
+    this.#removeTodos();
+
+    todos.forEach((todo) => {
+      const todoElement = this.#createtodoElement(todo.value);
+      this.#todosContainer.appendChild(todoElement);
     });
   }
 }
 
 const main = () => {
-  const tasks = new Tasks();
-  const tasksContainer = getTasksContainer();
-  const view = new ViewTask(tasksContainer);
+  const todos = new Todos();
+  const todosContainer = gettodosContainer();
+  const todoViewer = new TodoViewer(todosContainer);
 
   const addButton = getAddButton();
 
   addButton.onclick = () => {
     const inputBox = getInputBox();
-    const taskText = inputBox.value;
-    tasks.addTask(taskText);
-    view.render(tasks.getTasks());
+    const todoText = inputBox.value;
+    todos.addTodo(todoText);
+    todoViewer.render(todos.getTodos());
   };
 };
 

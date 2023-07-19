@@ -13,7 +13,7 @@
   align-items: center;
 }
 
-#add-task {
+#add-todo {
   width: 100%;
   display: flex;
   gap: 2em;
@@ -24,11 +24,11 @@
   width: 70%;
 }
 
-#tasks-container {
+#todos-container {
   width: 70%;
 }
 
-.task {
+.todo {
   display: flex;
   justify-content: space-between;
   align-items: center;

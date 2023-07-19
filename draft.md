@@ -9,28 +9,28 @@
 
   - data: todos
   - methods:
-    - addTask
-    - markAsDone(taskId)
+    - addtodo
+    - markAsDone(todoId)
 
 - todoController
 
-  - data: todoList, inputController, todoView, todoId
+  - data: todoList, inputController, todotodoViewer, todoId
   - methods
     - start
-      // add onNewTask listener
-      // add onTaskDone listener
+      // add onNewtodo listener
+      // add ontodoDone listener
   - private methods
-    // onNewTask will create a task and todoList.addTask with an id and description
-    // onTaskDone will get an id and mark task as done
+    // onNewtodo will create a todo and todoList.addtodo with an id and description
+    // ontodoDone will get an id and mark todo as done
 
 - inputController
 
   - data: input button element, done button element
   - methods
-    - onNewTask
-    - onTaskDone
+    - onNewtodo
+    - ontodoDone
 
-- todoView
+- todotodoViewer
   - data: todosContainer
     Method:
   - render
