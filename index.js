@@ -128,11 +128,16 @@ class TodosViewer {
     this.#todosContainer = todosContainer;
   }
 
+  #changeStyleOnCheck(todoMessage, checkbox) {
+    todoMessage.style.textDecoration = "line-through";
+    checkbox.value = "unmark";
+  }
+
   #createCheckbox(id) {
     const checkBox = document.createElement("input");
 
     checkBox.type = "button";
-    checkBox.value = "done";
+    checkBox.value = "mark";
     checkBox.classList.add("checkbox");
     checkBox.id = id;
 
@@ -144,8 +149,7 @@ class TodosViewer {
     const todoMessage = document.createElement("p");
     const checkbox = this.#createCheckbox(todo.id);
 
-    const textDecoration = todo.isDone() ? "line-through" : "none";
-    todoMessage.style.textDecoration = textDecoration;
+    if (todo.isDone()) this.#changeStyleOnCheck(todoMessage, checkbox);
 
     todoMessage.innerText = todo.value;
     todoElement.appendChild(todoMessage);
