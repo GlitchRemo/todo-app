@@ -1,6 +1,8 @@
-const getMainSection = () => document.querySelector("#main-section");
+const getTasksContainer = () => document.querySelector("#tasks-container");
 
-const getReadTaskSection = () => document.querySelector(".input-task");
+const getInputBox = () => document.querySelector("#input-box");
+
+const getAddButton = () => document.querySelector("#add-button");
 
 const getTaskElement = (checkBox) => checkBox.parentElement.querySelector("p");
 
@@ -37,42 +39,17 @@ const createTaskElement = (taskText) => {
 };
 
 const onNewTask = () => {
-  const readTaskSection = getReadTaskSection();
-  const taskText = readTaskSection.value;
+  const inputBox = getInputBox();
+  const taskText = inputBox.value;
 
   const taskElement = createTaskElement(taskText);
-  const tasksContainer = getMainSection();
+  const tasksContainer = getTasksContainer();
   tasksContainer.appendChild(taskElement);
 };
 
-const createAddButton = () => {
-  const addButton = document.createElement("input");
-
-  addButton.type = "button";
-  addButton.value = "Add";
-  addButton.onclick = onNewTask;
-
-  return addButton;
-};
-
-const createAddTaskSection = () => {
-  const taskSection = document.createElement("section");
-
-  const readTaskSection = document.createElement("input");
-  readTaskSection.classList.add("input-task");
-
-  const addButton = createAddButton();
-
-  taskSection.appendChild(readTaskSection);
-  taskSection.appendChild(addButton);
-
-  return taskSection;
-};
-
 const main = () => {
-  const mainSection = getMainSection();
-  const addTaskSection = createAddTaskSection();
-  mainSection.appendChild(addTaskSection);
+  const addButton = getAddButton();
+  addButton.onclick = onNewTask;
 };
 
 window.onload = main;
