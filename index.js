@@ -40,9 +40,14 @@ class Todos {
   #isSorted;
 
   constructor() {
-    this.#id = 1;
+    this.#id = 0;
     this.#isSorted = false;
     this.#todos = {};
+  }
+
+  #generateId() {
+    this.#id++;
+    return this.#id;
   }
 
   #getTodosList() {
@@ -58,8 +63,9 @@ class Todos {
   }
 
   addTodo(description) {
-    const todo = new Todo(description, this.#id); // TODO: generate an id in todo class
-    this.#todos[this.#id++] = todo;
+    const todoId = this.#generateId();
+    const todo = new Todo(description, todoId); // TODO: generate an id in todo class
+    this.#todos[todoId] = todo;
   }
 
   markOrUnmarkTodo(id) {
@@ -138,6 +144,7 @@ class MouseController {
   onNewTodo(listener) {
     this.#addButtonElement.onclick = () => {
       const todoMessage = this.#inputboxElement.value;
+
       this.#resetInputBox();
       listener(todoMessage);
     };
