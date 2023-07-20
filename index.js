@@ -93,7 +93,7 @@ class TodoController {
       ? this.#todos.getSortedTodos()
       : this.#todos.getTodos();
 
-    this.#viewer.render(todos);
+    this.#viewer.render({ todos, sortEnabled: this.#isSorted });
   }
 
   #onNewTodo(todoMessage) {
@@ -108,7 +108,6 @@ class TodoController {
 
   #onSort() {
     this.#isSorted = !this.#isSorted;
-    this.#viewer.changeSortButtonValue(this.#isSorted);
     this.#arrangeAndRender();
   }
 
@@ -208,13 +207,15 @@ class TodosViewer {
     );
   }
 
-  changeSortButtonValue(isSorted) {
-    const value = isSorted ? "Date" : "A-Z";
-    this.#sortButton.value = value;
+  #setSortButtonValue(sortEnabled) {
+    const text = sortEnabled ? "Date" : "A-Z";
+    this.#sortButton.value = text;
   }
 
-  render(todos) {
+  render({ todos, sortEnabled }) {
     this.#removeTodos();
+
+    this.#setSortButtonValue(sortEnabled);
 
     todos.forEach((todo) => {
       const todoElement = this.#createTodoElement(todo);
