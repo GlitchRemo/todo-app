@@ -176,7 +176,7 @@ class TodosViewer {
     this.#sortButton = sortButton;
   }
 
-  #changeStyleOnCheck(todoMessage, checkbox) {
+  #styleOnMarkOrUnmark(todoMessage, checkbox) {
     todoMessage.style.textDecoration = "line-through";
     checkbox.value = "unmark";
   }
@@ -198,7 +198,7 @@ class TodosViewer {
     const todoMessage = document.createElement("p");
     const checkbox = this.#createCheckbox(todo.id);
 
-    if (todo.isDone()) this.#changeStyleOnCheck(todoMessage, checkbox);
+    if (todo.isDone()) this.#styleOnMarkOrUnmark(todoMessage, checkbox);
 
     todoMessage.innerText = todo.description;
     todoElement.appendChild(todoMessage);
