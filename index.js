@@ -104,51 +104,37 @@ class TodosController {
     return this.#todos.getTodos();
   }
 
-  #onNewTodo(todoMessage) {
-    this.#todos.addTodo(todoMessage);
-    this.#view.render({
+  #getState() {
+    return {
       todos: this.#getArrangedTodos(),
       isGrouped: this.#isGrouped,
       isSorted: this.#isSorted,
-    });
+    };
+  }
+
+  #onNewTodo(todoMessage) {
+    this.#todos.addTodo(todoMessage);
+    this.#view.render(this.#getState());
   }
 
   #onMarkOrUnmark(id) {
     this.#todos.markOrUnmarkTodo(id);
-    this.#view.render({
-      todos: this.#getArrangedTodos(),
-      isGrouped: this.#isGrouped,
-      isSorted: this.#isSorted,
-    });
-  }
-
-  #onSort() {
-    this.#isSorted = !this.#isSorted;
-
-    this.#view.render({
-      todos: this.#getArrangedTodos(),
-      isGrouped: this.#isGrouped,
-      isSorted: this.#isSorted,
-    });
-  }
-
-  #onGroup() {
-    this.#isGrouped = !this.#isGrouped;
-
-    this.#view.render({
-      todos: this.#getArrangedTodos(),
-      isGrouped: this.#isGrouped,
-      isSorted: this.#isSorted,
-    });
+    this.#view.render(this.#getState());
   }
 
   #onDelete(id) {
     this.#todos.deleteTodo(id);
-    this.#view.render({
-      todos: this.#getArrangedTodos(),
-      isGrouped: this.#isGrouped,
-      isSorted: this.#isSorted,
-    });
+    this.#view.render(this.#getState());
+  }
+
+  #onSort() {
+    this.#isSorted = !this.#isSorted;
+    this.#view.render(this.#getState());
+  }
+
+  #onGroup() {
+    this.#isGrouped = !this.#isGrouped;
+    this.#view.render(this.#getState());
   }
 
   start() {
