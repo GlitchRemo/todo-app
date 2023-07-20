@@ -81,7 +81,7 @@ class Todos {
   }
 }
 
-class TodoController {
+class TodosController {
   #todos;
   #viewer;
   #inputController;
@@ -252,13 +252,13 @@ const main = () => {
     sortButton
   );
 
-  const todoController = new TodoController(
+  const todosController = new TodosController(
     todos,
     todosViewer,
     mouseController
   );
 
-  todoController.start();
+  todosController.start();
 };
 
 window.onload = main;
