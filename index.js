@@ -243,23 +243,12 @@ class TodosView {
     checkbox.value = "unmark";
   }
 
-  #createDeleteButton(id) {
-    const deleteButton = document.createElement("input");
-
-    deleteButton.type = "button";
-    deleteButton.value = "delete";
-    deleteButton.classList.add("delete-button");
-    deleteButton.id = id;
-
-    return deleteButton;
-  }
-
-  #createCheckbox(id) {
+  #createButton(id, value, className) {
     const checkBox = document.createElement("input");
 
     checkBox.type = "button";
-    checkBox.value = "mark";
-    checkBox.classList.add("checkbox");
+    checkBox.value = value;
+    checkBox.classList.add(className);
     checkBox.id = id;
 
     return checkBox;
@@ -269,8 +258,8 @@ class TodosView {
     // TODO: break into private methods
     const todoElement = document.createElement("section");
     const todoMessage = document.createElement("p");
-    const checkbox = this.#createCheckbox(todo.id);
-    const deleteButton = this.#createDeleteButton(todo.id);
+    const checkbox = this.#createButton(todo.id, "mark", "checkbox");
+    const deleteButton = this.#createButton(todo.id, "delete", "delete-button");
 
     if (todo.isDone()) this.#styleOnMarkOrUnmark(todoMessage, checkbox);
 
