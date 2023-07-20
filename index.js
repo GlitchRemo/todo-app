@@ -85,56 +85,68 @@ class Todos {
 
 class TodosController {
   #todos;
-  #viewer;
+  #view;
   #inputController;
-  #sortBy;
+  #isSorted;
+  #isGrouped;
 
-  constructor(todos, viewer, inputController) {
+  constructor(todos, view, inputController) {
     this.#todos = todos;
-    this.#viewer = viewer;
+    this.#view = view;
     this.#inputController = inputController;
-    this.#sortBy = ["date", "alphabets", "done"];
-  }
-
-  #arrangeAndRender() {
-    if (this.#sortBy[0] === "alphabets") {
-      const todos = this.#todos.getSortedTodos();
-      this.#viewer.render({ todos, sortBy: this.#sortBy[1] });
-      return;
-    }
-
-    if (this.#sortBy[0] === "date") {
-      const todos = this.#todos.getTodos();
-      this.#viewer.render({ todos, sortBy: this.#sortBy[1] });
-      return;
-    }
-
-    if (this.#sortBy[0] === "done") {
-      const todos = this.#todos.getGroupedTodos();
-      this.#viewer.render({ todos, sortBy: this.#sortBy[1] });
-      return;
-    }
+    this.#isSorted = false;
+    this.#isGrouped = false;
   }
 
   #onNewTodo(todoMessage) {
     this.#todos.addTodo(todoMessage);
-    this.#arrangeAndRender();
+    this.#view.render({
+      todos: this.#todos.getTodos(),
+      isGrouped: this.#isGrouped,
+      isSorted: this.#isSorted,
+    });
   }
 
   #onMarkOrUnmark(id) {
     this.#todos.markOrUnmarkTodo(id);
-    this.#arrangeAndRender();
+    this.#view.render({
+      todos: this.#todos.getTodos(),
+      isGrouped: this.#isGrouped,
+      isSorted: this.#isSorted,
+    });
   }
 
   #onSort() {
-    this.#sortBy.push(this.#sortBy.shift());
-    this.#arrangeAndRender();
+    this.#isSorted = !this.#isSorted;
+    const todos = this.#isSorted
+      ? this.#todos.getSortedTodos()
+      : this.#todos.getTodos();
+
+    this.#view.render({
+      todos,
+      isGrouped: this.#isGrouped,
+      isSorted: this.#isSorted,
+    });
+  }
+
+  #onGroup() {
+    this.#isGrouped = !this.#isGrouped;
+    const todos = this.#isGrouped
+      ? this.#todos.getGroupedTodos()
+      : this.#todos.getTodos();
+
+    this.#view.render({
+      todos,
+      isGrouped: this.#isGrouped,
+      isSorted: this.#isSorted,
+    });
   }
 
   start() {
     this.#inputController.onNewTodo((message) => this.#onNewTodo(message));
     this.#inputController.onMarkOrUnmark((id) => this.#onMarkOrUnmark(id));
     this.#inputController.onSort(() => this.#onSort());
+    this.#inputController.onGroup(() => this.#onGroup());
   }
 }
 
@@ -143,12 +155,20 @@ class MouseController {
   #todosContainer;
   #inputboxElement;
   #sortButton;
+  #groupButton;
 
-  constructor(addButtonElement, inputboxElement, todosContainer, sortButton) {
+  constructor(
+    addButtonElement,
+    inputboxElement,
+    todosContainer,
+    sortButton,
+    groupButton
+  ) {
     this.#addButtonElement = addButtonElement;
     this.#inputboxElement = inputboxElement;
     this.#todosContainer = todosContainer;
     this.#sortButton = sortButton;
+    this.#groupButton = groupButton;
   }
 
   #resetInputBox() {
@@ -179,15 +199,23 @@ class MouseController {
       listener();
     };
   }
+
+  onGroup(listener) {
+    this.#groupButton.onclick = () => {
+      listener();
+    };
+  }
 }
 
-class TodosViewer {
+class TodosView {
   #todosContainer;
   #sortButton;
+  #groupButton;
 
-  constructor(todosContainer, sortButton) {
+  constructor(todosContainer, sortButton, groupButton) {
     this.#todosContainer = todosContainer;
     this.#sortButton = sortButton;
+    this.#groupButton = groupButton;
   }
 
   #styleOnMarkOrUnmark(todoMessage, checkbox) {
@@ -228,18 +256,24 @@ class TodosViewer {
     );
   }
 
-  #changeSortButtonValue(sortBy) {
-    const text = `Sort By ${sortBy}`;
+  #changeSortButtonValue(isSorted) {
+    const text = isSorted ? "Sort By Date" : "Sort Alphabetically";
     this.#sortButton.value = text;
+  }
+
+  #changeGroupButtonValue(isGrouped) {
+    const text = isGrouped ? "Sort By Creation Date" : "Group By Done";
+    this.#groupButton.value = text;
   }
 
   #isEmptyTodo(todo) {
     return todo.description === "";
   }
 
-  render({ todos, sortBy }) {
+  render({ todos, isSorted, isGrouped }) {
     this.#removeTodos();
-    this.#changeSortButtonValue(sortBy);
+    this.#changeSortButtonValue(isSorted);
+    this.#changeGroupButtonValue(isGrouped);
 
     todos.forEach((todo) => {
       if (this.#isEmptyTodo(todo)) return;
@@ -255,20 +289,22 @@ const main = () => {
   const addButton = document.querySelector("#add-button");
   const inputBox = document.querySelector("#input-box");
   const sortButton = document.querySelector("#sort-button");
+  const groupButton = document.querySelector("#group-button");
 
   const todos = new Todos();
-  const todosViewer = new TodosViewer(todosContainer, sortButton);
+  const todosView = new TodosView(todosContainer, sortButton, groupButton);
 
   const mouseController = new MouseController(
     addButton,
     inputBox,
     todosContainer,
-    sortButton
+    sortButton,
+    groupButton
   );
 
   const todosController = new TodosController(
     todos,
-    todosViewer,
+    todosView,
     mouseController
   );
 
