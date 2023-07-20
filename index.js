@@ -79,15 +79,17 @@ class TodoController {
   #todos;
   #viewer;
   #inputController;
+  #isSorted;
 
   constructor(todos, viewer, inputController) {
     this.#todos = todos;
     this.#viewer = viewer;
     this.#inputController = inputController;
+    this.#isSorted = false;
   }
 
   #getTodos() {
-    return this.#todos.isSorted()
+    return this.#isSorted
       ? this.#todos.getSortedTodos()
       : this.#todos.getTodos();
   }
@@ -103,7 +105,7 @@ class TodoController {
   }
 
   #onSort() {
-    this.#todos.toggleSortStatus();
+    this.#isSorted = !this.#isSorted;
     this.#viewer.render(this.#getTodos());
   }
 
@@ -127,9 +129,14 @@ class MouseController {
     this.#sortButton = sortButton;
   }
 
+  #resetInputBox() {
+    this.#inputboxElement.value = "";
+  }
+
   onNewTodo(listener) {
     this.#addButtonElement.onclick = () => {
       const todoMessage = this.#inputboxElement.value;
+      this.#resetInputBox();
       listener(todoMessage);
     };
   }

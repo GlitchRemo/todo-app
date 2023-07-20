@@ -1,3 +1,2 @@
-- remove text from input box after addition of new task
-- check box for sort
+- change sort button when it is already sorted
 - remove eslint errors
