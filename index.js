@@ -207,15 +207,14 @@ class TodosViewer {
     );
   }
 
-  #setSortButtonValue(sortEnabled) {
+  #changeSortButtonValue(sortEnabled) {
     const text = sortEnabled ? "Date" : "A-Z";
     this.#sortButton.value = text;
   }
 
   render({ todos, sortEnabled }) {
     this.#removeTodos();
-
-    this.#setSortButtonValue(sortEnabled);
+    this.#changeSortButtonValue(sortEnabled);
 
     todos.forEach((todo) => {
       const todoElement = this.#createTodoElement(todo);
