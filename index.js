@@ -88,25 +88,28 @@ class TodoController {
     this.#isSorted = false;
   }
 
-  #getTodos() {
-    return this.#isSorted
+  #arrangeAndRender() {
+    const todos = this.#isSorted
       ? this.#todos.getSortedTodos()
       : this.#todos.getTodos();
+
+    this.#viewer.render(todos);
   }
 
   #onNewTodo(todoMessage) {
     this.#todos.addTodo(todoMessage);
-    this.#viewer.render(this.#getTodos());
+    this.#arrangeAndRender();
   }
 
   #onMarkOrUnmark(id) {
     this.#todos.markOrUnmarkTodo(id);
-    this.#viewer.render(this.#getTodos());
+    this.#arrangeAndRender();
   }
 
   #onSort() {
     this.#isSorted = !this.#isSorted;
-    this.#viewer.render(this.#getTodos());
+    this.#viewer.changeSortButtonValue(this.#isSorted);
+    this.#arrangeAndRender();
   }
 
   start() {
@@ -160,9 +163,11 @@ class MouseController {
 
 class TodosViewer {
   #todosContainer;
+  #sortButton;
 
-  constructor(todosContainer) {
+  constructor(todosContainer, sortButton) {
     this.#todosContainer = todosContainer;
+    this.#sortButton = sortButton;
   }
 
   #changeStyleOnCheck(todoMessage, checkbox) {
@@ -203,6 +208,11 @@ class TodosViewer {
     );
   }
 
+  changeSortButtonValue(isSorted) {
+    const value = isSorted ? "Date" : "A-Z";
+    this.#sortButton.value = value;
+  }
+
   render(todos) {
     this.#removeTodos();
 
@@ -220,7 +230,7 @@ const main = () => {
   const sortButton = document.querySelector("#sort-button");
 
   const todos = new Todos();
-  const todosViewer = new TodosViewer(todosContainer);
+  const todosViewer = new TodosViewer(todosContainer, sortButton);
 
   const mouseController = new MouseController(
     addButton,
