@@ -21,10 +21,6 @@ class Todo {
     return this.#description;
   }
 
-  get asciiValue() {
-    return this.#description.charCodeAt();
-  }
-
   get id() {
     return this.#id;
   }
@@ -81,6 +77,10 @@ class Todos {
   getGroupedTodos() {
     return [...this.#getUndoneTodos(), ...this.#getDoneTodos()];
   }
+
+  deleteTodo(id) {
+    delete this.#todos[id];
+  }
 }
 
 class TodosController {
@@ -98,10 +98,16 @@ class TodosController {
     this.#isGrouped = false;
   }
 
+  #getArrangedTodos() {
+    if (this.#isGrouped) return this.#todos.getGroupedTodos();
+    if (this.#isSorted) return this.#todos.getSortedTodos();
+    return this.#todos.getTodos();
+  }
+
   #onNewTodo(todoMessage) {
     this.#todos.addTodo(todoMessage);
     this.#view.render({
-      todos: this.#todos.getTodos(),
+      todos: this.#getArrangedTodos(),
       isGrouped: this.#isGrouped,
       isSorted: this.#isSorted,
     });
@@ -110,7 +116,7 @@ class TodosController {
   #onMarkOrUnmark(id) {
     this.#todos.markOrUnmarkTodo(id);
     this.#view.render({
-      todos: this.#todos.getTodos(),
+      todos: this.#getArrangedTodos(),
       isGrouped: this.#isGrouped,
       isSorted: this.#isSorted,
     });
@@ -118,12 +124,9 @@ class TodosController {
 
   #onSort() {
     this.#isSorted = !this.#isSorted;
-    const todos = this.#isSorted
-      ? this.#todos.getSortedTodos()
-      : this.#todos.getTodos();
 
     this.#view.render({
-      todos,
+      todos: this.#getArrangedTodos(),
       isGrouped: this.#isGrouped,
       isSorted: this.#isSorted,
     });
@@ -131,12 +134,18 @@ class TodosController {
 
   #onGroup() {
     this.#isGrouped = !this.#isGrouped;
-    const todos = this.#isGrouped
-      ? this.#todos.getGroupedTodos()
-      : this.#todos.getTodos();
 
     this.#view.render({
-      todos,
+      todos: this.#getArrangedTodos(),
+      isGrouped: this.#isGrouped,
+      isSorted: this.#isSorted,
+    });
+  }
+
+  #onDelete(id) {
+    this.#todos.deleteTodo(id);
+    this.#view.render({
+      todos: this.#getArrangedTodos(),
       isGrouped: this.#isGrouped,
       isSorted: this.#isSorted,
     });
@@ -145,6 +154,7 @@ class TodosController {
   start() {
     this.#inputController.onNewTodo((message) => this.#onNewTodo(message));
     this.#inputController.onMarkOrUnmark((id) => this.#onMarkOrUnmark(id));
+    this.#inputController.onDelete((id) => this.#onDelete(id));
     this.#inputController.onSort(() => this.#onSort());
     this.#inputController.onGroup(() => this.#onGroup());
   }
@@ -185,13 +195,13 @@ class MouseController {
   }
 
   onMarkOrUnmark(listener) {
-    this.#todosContainer.onclick = (event) => {
+    this.#todosContainer.addEventListener("click", (event) => {
       const checkbox = event.target;
 
       if (checkbox.className === "checkbox") {
         listener(checkbox.id);
       }
-    };
+    });
   }
 
   onSort(listener) {
@@ -204,6 +214,16 @@ class MouseController {
     this.#groupButton.onclick = () => {
       listener();
     };
+  }
+
+  onDelete(listener) {
+    this.#todosContainer.addEventListener("click", (event) => {
+      const deleteButton = event.target;
+
+      if (deleteButton.className === "delete-button") {
+        listener(deleteButton.id);
+      }
+    });
   }
 }
 
@@ -223,6 +243,17 @@ class TodosView {
     checkbox.value = "unmark";
   }
 
+  #createDeleteButton(id) {
+    const deleteButton = document.createElement("input");
+
+    deleteButton.type = "button";
+    deleteButton.value = "delete";
+    deleteButton.classList.add("delete-button");
+    deleteButton.id = id;
+
+    return deleteButton;
+  }
+
   #createCheckbox(id) {
     const checkBox = document.createElement("input");
 
@@ -239,12 +270,14 @@ class TodosView {
     const todoElement = document.createElement("section");
     const todoMessage = document.createElement("p");
     const checkbox = this.#createCheckbox(todo.id);
+    const deleteButton = this.#createDeleteButton(todo.id);
 
     if (todo.isDone()) this.#styleOnMarkOrUnmark(todoMessage, checkbox);
 
     todoMessage.innerText = todo.description;
     todoElement.appendChild(todoMessage);
     todoElement.appendChild(checkbox);
+    todoElement.appendChild(deleteButton);
     todoElement.classList.add("todo");
 
     return todoElement;
