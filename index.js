@@ -37,11 +37,9 @@ class Todo {
 class Todos {
   #todos;
   #id;
-  #isSorted;
 
   constructor() {
     this.#id = 0;
-    this.#isSorted = false;
     this.#todos = {};
   }
 
@@ -52,14 +50,6 @@ class Todos {
 
   #getTodosList() {
     return Object.values(this.#todos);
-  }
-
-  isSorted() {
-    return this.#isSorted;
-  }
-
-  toggleSortStatus() {
-    this.#isSorted = !this.#isSorted;
   }
 
   addTodo(description) {
@@ -79,27 +69,51 @@ class Todos {
   getSortedTodos() {
     return this.#getTodosList().sort((a, b) => (a.comesBefore(b) ? -1 : 1));
   }
+
+  #getUndoneTodos() {
+    return this.#getTodosList().filter((todo) => !todo.isDone());
+  }
+
+  #getDoneTodos() {
+    return this.#getTodosList().filter((todo) => todo.isDone());
+  }
+
+  getGroupedTodos() {
+    return [...this.#getUndoneTodos(), ...this.#getDoneTodos()];
+  }
 }
 
 class TodosController {
   #todos;
   #viewer;
   #inputController;
-  #isSorted;
+  #sortBy;
 
   constructor(todos, viewer, inputController) {
     this.#todos = todos;
     this.#viewer = viewer;
     this.#inputController = inputController;
-    this.#isSorted = false;
+    this.#sortBy = ["date", "alphabets", "done"];
   }
 
   #arrangeAndRender() {
-    const todos = this.#isSorted
-      ? this.#todos.getSortedTodos()
-      : this.#todos.getTodos();
+    if (this.#sortBy[0] === "alphabets") {
+      const todos = this.#todos.getSortedTodos();
+      this.#viewer.render({ todos, sortBy: this.#sortBy[1] });
+      return;
+    }
 
-    this.#viewer.render({ todos, sortEnabled: this.#isSorted });
+    if (this.#sortBy[0] === "date") {
+      const todos = this.#todos.getTodos();
+      this.#viewer.render({ todos, sortBy: this.#sortBy[1] });
+      return;
+    }
+
+    if (this.#sortBy[0] === "done") {
+      const todos = this.#todos.getGroupedTodos();
+      this.#viewer.render({ todos, sortBy: this.#sortBy[1] });
+      return;
+    }
   }
 
   #onNewTodo(todoMessage) {
@@ -113,7 +127,7 @@ class TodosController {
   }
 
   #onSort() {
-    this.#isSorted = !this.#isSorted;
+    this.#sortBy.push(this.#sortBy.shift());
     this.#arrangeAndRender();
   }
 
@@ -214,8 +228,8 @@ class TodosViewer {
     );
   }
 
-  #changeSortButtonValue(sortEnabled) {
-    const text = sortEnabled ? "Date" : "A-Z";
+  #changeSortButtonValue(sortBy) {
+    const text = `Sort By ${sortBy}`;
     this.#sortButton.value = text;
   }
 
@@ -223,9 +237,9 @@ class TodosViewer {
     return todo.description === "";
   }
 
-  render({ todos, sortEnabled }) {
+  render({ todos, sortBy }) {
     this.#removeTodos();
-    this.#changeSortButtonValue(sortEnabled);
+    this.#changeSortButtonValue(sortBy);
 
     todos.forEach((todo) => {
       if (this.#isEmptyTodo(todo)) return;
