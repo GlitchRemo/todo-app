@@ -219,11 +219,17 @@ class TodosViewer {
     this.#sortButton.value = text;
   }
 
+  #isEmptyTodo(todo) {
+    return todo.description === "";
+  }
+
   render({ todos, sortEnabled }) {
     this.#removeTodos();
     this.#changeSortButtonValue(sortEnabled);
 
     todos.forEach((todo) => {
+      if (this.#isEmptyTodo(todo)) return;
+
       const todoElement = this.#createTodoElement(todo);
       this.#todosContainer.appendChild(todoElement);
     });
