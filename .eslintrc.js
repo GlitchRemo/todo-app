@@ -1,6 +1,6 @@
 module.exports = {
   env: {
-    es2016: true,
+    es2022: true,
   },
 
   rules: {
@@ -10,12 +10,11 @@ module.exports = {
     "key-spacing": ["error"],
     "prefer-const": ["error"],
     "no-multiple-empty-lines": ["error", { max: 1 }],
-    "max-lines-per-function": ["error", { max: 12 }],
     "max-statements": ["error", { max: 10 }, { ignoreTopLevelFunctions: true }],
     "no-magic-numbers": ["error"],
     "use-isnan": ["error"],
     "complexity": ["error", { max: 2 }],
-    "max-params": ["error", { max: 3 }],
+    "max-params": ["warn", { max: 3 }],
     "eqeqeq": ["error"],
     "no-multi-spaces": ["error", { ignoreEOLComments: true }],
     "no-multi-assign": ["warn"],

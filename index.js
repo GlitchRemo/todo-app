@@ -28,6 +28,10 @@ class Todo {
   get id() {
     return this.#id;
   }
+
+  comesBefore(todo) {
+    return this.#description < todo.description;
+  }
 }
 
 class Todos {
@@ -41,6 +45,10 @@ class Todos {
     this.#todos = {};
   }
 
+  #getTodosList() {
+    return Object.values(this.#todos);
+  }
+
   isSorted() {
     return this.#isSorted;
   }
@@ -50,7 +58,7 @@ class Todos {
   }
 
   addTodo(description) {
-    const todo = new Todo(description, this.#id);
+    const todo = new Todo(description, this.#id); // TODO: generate an id in todo class
     this.#todos[this.#id++] = todo;
   }
 
@@ -59,13 +67,11 @@ class Todos {
   }
 
   getTodos() {
-    return Object.values(this.#todos); //TODO: make a fn to provide this
+    return this.#getTodosList();
   }
 
   getSortedTodos() {
-    return Object.values(this.#todos).sort(
-      (a, b) => a.asciiValue - b.asciiValue
-    );
+    return this.#getTodosList().sort((a, b) => (a.comesBefore(b) ? -1 : 1));
   }
 }
 
@@ -169,6 +175,7 @@ class TodosViewer {
   }
 
   #createTodoElement(todo) {
+    // TODO: break into private methods
     const todoElement = document.createElement("section");
     const todoMessage = document.createElement("p");
     const checkbox = this.#createCheckbox(todo.id);
@@ -199,19 +206,15 @@ class TodosViewer {
   }
 }
 
-const getTodosContainer = () => document.querySelector("#todos-container");
-const getInputBox = () => document.querySelector("#input-box");
-const getAddButton = () => document.querySelector("#add-button");
-const getSortButton = () => document.querySelector("#sort-button");
-
 const main = () => {
-  const todosContainer = getTodosContainer();
-  const addButton = getAddButton();
-  const inputBox = getInputBox();
-  const sortButton = getSortButton();
+  const todosContainer = document.querySelector("#todos-container");
+  const addButton = document.querySelector("#add-button");
+  const inputBox = document.querySelector("#input-box");
+  const sortButton = document.querySelector("#sort-button");
 
   const todos = new Todos();
   const todosViewer = new TodosViewer(todosContainer);
+
   const mouseController = new MouseController(
     addButton,
     inputBox,

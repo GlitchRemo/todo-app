@@ -1,10 +1,3 @@
-Progress tracker:
-After 25 minutes:
-Created viewer for todos
-created input controller
-After 25 minutes:
-Created todo controller
-Created main
-
-- change status of todo?
-- see on listeners name in todo controller
+- remove text from input box after addition of new task
+- check box for sort
+- remove eslint errors
