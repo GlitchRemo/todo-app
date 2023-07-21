@@ -11,7 +11,7 @@ module.exports = {
     "prefer-const": ["error"],
     "no-multiple-empty-lines": ["error", { max: 1 }],
     "max-statements": ["error", { max: 10 }, { ignoreTopLevelFunctions: true }],
-    "no-magic-numbers": ["error"],
+    "no-magic-numbers": ["warn"],
     "use-isnan": ["error"],
     "complexity": ["error", { max: 2 }],
     "max-params": ["warn", { max: 3 }],

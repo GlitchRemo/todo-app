@@ -1,8 +1,3 @@
-const generateEncodedIdForCheckbox = (id) => `checkbox-${id}`;
-const generateEncodedIdForDeleteButton = (id) => `delete-${id}`;
-const decodeIdForCheckbox = (encodedId) => +encodedId.split("-")[1];
-const decodeIdForDeleteButton = (encodedId) => +encodedId.split("-")[1];
-
 class Todo {
   #description;
   #id;
@@ -121,7 +116,6 @@ class TodosController {
   }
 
   #onMarkOrUnmark(id) {
-    console.log(id);
     this.#todos.markOrUnmarkTodo(id);
     this.#view.render(this.#getState());
   }
@@ -143,30 +137,22 @@ class TodosController {
 
   start() {
     this.#inputController.onNewTodo((message) => this.#onNewTodo(message));
-    this.#inputController.onMarkOrUnmark((id) => this.#onMarkOrUnmark(id));
-    this.#inputController.onDelete((id) => this.#onDelete(id));
     this.#inputController.onSort(() => this.#onSort());
     this.#inputController.onGroup(() => this.#onGroup());
+    this.#view.registerMarkListener((id) => this.#onMarkOrUnmark(id));
+    this.#view.registerDeleteListener((id) => this.#onDelete(id));
   }
 }
 
 class MouseController {
   #addButtonElement;
-  #todosContainer;
   #inputboxElement;
   #sortButton;
   #groupButton;
 
-  constructor(
-    addButtonElement,
-    inputboxElement,
-    todosContainer,
-    sortButton,
-    groupButton
-  ) {
+  constructor(addButtonElement, inputboxElement, sortButton, groupButton) {
     this.#addButtonElement = addButtonElement;
     this.#inputboxElement = inputboxElement;
-    this.#todosContainer = todosContainer;
     this.#sortButton = sortButton;
     this.#groupButton = groupButton;
   }
@@ -184,17 +170,6 @@ class MouseController {
     };
   }
 
-  onMarkOrUnmark(listener) {
-    this.#todosContainer.addEventListener("click", (event) => {
-      const checkbox = event.target;
-      const checkboxId = decodeIdForCheckbox(checkbox.id);
-
-      if (checkbox.className === "checkbox") {
-        listener(checkboxId);
-      }
-    });
-  }
-
   onSort(listener) {
     this.#sortButton.onclick = () => {
       listener();
@@ -206,23 +181,14 @@ class MouseController {
       listener();
     };
   }
-
-  onDelete(listener) {
-    this.#todosContainer.addEventListener("click", (event) => {
-      const deleteButton = event.target;
-      const deleteButtonId = decodeIdForDeleteButton(deleteButton.id);
-
-      if (deleteButton.className === "delete-button") {
-        listener(deleteButtonId);
-      }
-    });
-  }
 }
 
 class TodosView {
   #todosContainer;
   #sortButton;
   #groupButton;
+  #markListener;
+  #deleteListener;
 
   constructor(todosContainer, sortButton, groupButton) {
     this.#todosContainer = todosContainer;
@@ -235,34 +201,51 @@ class TodosView {
     checkbox.value = "unmark";
   }
 
-  #createButton(id, value, className) {
-    const checkBox = document.createElement("input");
+  #createDeleteButton(id) {
+    const deleteButton = document.createElement("input");
+    const deleteButtonId = `delete-${id}`;
 
-    checkBox.type = "button";
-    checkBox.value = value;
-    checkBox.classList.add(className);
-    checkBox.id = id;
+    deleteButton.type = "button";
+    deleteButton.value = "delete";
+    deleteButton.classList.add("delete-button");
+    deleteButton.id = deleteButtonId;
 
-    return checkBox;
+    deleteButton.onclick = () => {
+      const deleteButtonId = +deleteButton.id.split("-")[1];
+      this.#deleteListener(deleteButtonId);
+    };
+
+    return deleteButton;
+  }
+
+  #createMarkButton(id) {
+    const markButton = document.createElement("input");
+    const markButtonId = `mark-${id}`;
+
+    markButton.type = "button";
+    markButton.value = "mark";
+    markButton.classList.add("checkbox");
+    markButton.id = markButtonId;
+
+    markButton.onclick = () => {
+      const markButtonId = +markButton.id.split("-")[1];
+      this.#markListener(markButtonId);
+    };
+
+    return markButton;
   }
 
   #createTodoElement(todo) {
     const todoElement = document.createElement("section");
     const todoMessage = document.createElement("p");
-    const checkboxId = generateEncodedIdForCheckbox(todo.id);
-    const deleteButtonId = generateEncodedIdForDeleteButton(todo.id);
-    const checkbox = this.#createButton(checkboxId, "mark", "checkbox");
-    const deleteButton = this.#createButton(
-      deleteButtonId,
-      "delete",
-      "delete-button"
-    );
+    const markButton = this.#createMarkButton(todo.id);
+    const deleteButton = this.#createDeleteButton(todo.id);
 
-    if (todo.isDone()) this.#styleOnMarkOrUnmark(todoMessage, checkbox);
+    if (todo.isDone()) this.#styleOnMarkOrUnmark(todoMessage, markButton);
 
     todoMessage.innerText = todo.description;
     todoElement.appendChild(todoMessage);
-    todoElement.appendChild(checkbox);
+    todoElement.appendChild(markButton);
     todoElement.appendChild(deleteButton);
     todoElement.classList.add("todo");
 
@@ -287,6 +270,14 @@ class TodosView {
 
   #isEmptyTodo(todo) {
     return todo.description === "";
+  }
+
+  registerMarkListener(listener) {
+    this.#markListener = listener;
+  }
+
+  registerDeleteListener(listener) {
+    this.#deleteListener = listener;
   }
 
   render({ todos, isSorted, isGrouped }) {
@@ -316,7 +307,6 @@ const main = () => {
   const mouseController = new MouseController(
     addButton,
     inputBox,
-    todosContainer,
     sortButton,
     groupButton
   );
