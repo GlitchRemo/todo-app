@@ -1,4 +1,1 @@
-- style: add a line seperation between todos
-- remove eslint errors
-- change name of listeners in input controller
-- who has the info of keeping the sort status
+- change order of todo comparison in string

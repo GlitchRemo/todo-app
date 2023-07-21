@@ -4,17 +4,84 @@
     <script src="./index.js"></script>
   </head>
   <body>
-    <main id="page">
-      <header>
-        <h1>Todo</h1>
-      </header>
-      <section id="add-todo">
-        <input type="text" id="input-box" placeholder="Enter a todo" />
-        <input type="button" id="add-button" value="Add" />
-        <input type="button" id="sort-button" value="Sort Alphabetically" />
-        <input type="button" id="group-button" value="Group By Done" />
-      </section>
-      <section id="todos-container"></section>
+    <header>
+      <h1>Task</h1>
+    </header>
+    <main class="todos">
+      <article class="task-list" id="task-list-1">
+        <header class="title"><h2>Office Task</h2></header>
+        <section class="add-task">
+          <input type="text" id="input-box" placeholder="Enter a task" />
+          <input type="button" id="add-button" class="button" value="Add" />
+        </section>
+        <section class="buttons">
+          <input
+            type="button"
+            id="creation-sort-button"
+            class="button"
+            value="Sort By Creation Date"
+          />
+          <input
+            type="button"
+            id="alphabetic-sort-button"
+            class="button"
+            value="Sort Alphabetically"
+          />
+          <input
+            type="button"
+            id="group-button"
+            class="button"
+            value="Group By Done"
+          />
+        </section>
+        <section id="tasks-container"></section>
+      </article>
+
+      <article class="task-list" id="task-list-2">
+        <header class="title"><h2>Fitness Task</h2></header>
+        <section class="add-task">
+          <input type="text" id="input-box" placeholder="Enter a task" />
+          <input type="button" id="add-button" class="button" value="Add" />
+        </section>
+        <section class="buttons">
+          <input
+            type="button"
+            id="sort-button"
+            class="button"
+            value="Sort Alphabetically"
+          />
+          <input
+            type="button"
+            id="group-button"
+            class="button"
+            value="Group By Done"
+          />
+        </section>
+        <section id="tasks-container"></section>
+      </article>
+
+      <article class="task-list" id="task-list-3">
+        <header class="title"><h2>Office Task</h2></header>
+        <section class="add-task">
+          <input type="text" id="input-box" placeholder="Enter a task" />
+          <input type="button" id="add-button" class="button" value="Add" />
+        </section>
+        <section class="buttons">
+          <input
+            type="button"
+            id="sort-button"
+            class="button"
+            value="Sort Alphabetically"
+          />
+          <input
+            type="button"
+            id="group-button"
+            class="button"
+            value="Group By Done"
+          />
+        </section>
+        <section id="tasks-container"></section>
+      </article>
     </main>
   </body>
 </html>

@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 
-#page {
+body {
   width: 100%;
   display: flex;
   gap: 1em;
@@ -13,24 +13,40 @@
   align-items: center;
 }
 
-#add-todo {
+.task-list {
   width: 100%;
   display: flex;
-  gap: 2em;
-  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.add-task {
+  display: flex;
+  justify-content: space-between;
 }
 
 #input-box {
-  width: 70%;
+  width: 90%;
 }
 
-#todos-container {
-  width: 40%;
+.buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
 }
 
-.todo {
+main {
+  width: 50%;
+}
+
+.task {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid black;
+}
+
+.strike {
+  text-decoration: line-through;
 }
