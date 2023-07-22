@@ -30,28 +30,37 @@ class Todo {
   #tasks;
   #id;
   #orderType;
+  #title;
+  #taskId;
 
-  constructor() {
-    this.#id = 0;
+  constructor({ title, id }) {
+    this.#title = title;
+    this.#id = id;
+    this.#taskId = 0;
     this.#tasks = [];
-    this.#orderType = "creation date";
+    this.#orderType = { alphabetic: false, date: true, status: false };
   }
 
   #generateId() {
-    this.#id++;
-    return this.#id;
+    this.#taskId++;
+    return this.#taskId;
   }
 
-  setOrderToDefault() {
-    this.#orderType = "creation date";
-  }
+  sortTodoBy({ alphabetic, status, date }) {
+    if (alphabetic) {
+      this.#orderType = { alphabetic: true, date: false, status: false };
+      return;
+    }
 
-  setOrderToAlphabetic() {
-    this.#orderType = "alphabetic";
-  }
+    if (status) {
+      this.#orderType = { alphabetic: false, date: false, status: true };
+      return;
+    }
 
-  setOrderToGroup() {
-    this.#orderType = "group";
+    if (date) {
+      this.#orderType = { alphabetic: false, date: true, status: false };
+      return;
+    }
   }
 
   addTask(description) {
@@ -61,7 +70,7 @@ class Todo {
   }
 
   markOrUnmarkTask(id) {
-    this.#tasks.find((task) => task.id === +id).toggleDoneStatus();
+    this.#tasks.find((task) => task.id === id).toggleDoneStatus();
   }
 
   #getSortedTasks() {
@@ -77,9 +86,17 @@ class Todo {
   }
 
   getTasks() {
-    if (this.#orderType === "alphabetic") return this.#getSortedTasks();
-    if (this.#orderType === "group") return this.#getGroupedTasks();
+    if (this.#orderType.alphabetic) return this.#getSortedTasks();
+    if (this.#orderType.status) return this.#getGroupedTasks();
     return this.#tasks;
+  }
+
+  get title() {
+    return this.#title;
+  }
+
+  get id() {
+    return this.#id;
   }
 
   deleteTask(id) {
@@ -88,112 +105,139 @@ class Todo {
   }
 }
 
+class Todos {
+  #todos;
+  #id;
+
+  constructor() {
+    this.#todos = [];
+    this.#id = 0;
+  }
+
+  #generateId() {
+    this.#id++;
+    return this.#id;
+  }
+
+  addTodo(title) {
+    const id = this.#generateId();
+    this.#todos.push(new Todo({ id, title }));
+  }
+
+  addTask({ todoId, description }) {
+    this.#todos.find((todo) => todo.id === todoId).addTask(description);
+  }
+
+  removeTask({ todoId, taskId }) {
+    this.#todos.find((todo) => todo.id === todoId).deleteTask(taskId);
+  }
+
+  markOrUnmarkTask({ todoId, taskId }) {
+    this.#todos.find((todo) => todo.id === todoId).markOrUnmarkTask(taskId);
+  }
+
+  sortTodoBy(todoId, { alphabetic, status, date }) {
+    const todo = this.#todos.find((todo) => todo.id === todoId);
+    todo.sortTodoBy({ alphabetic, date, status });
+  }
+
+  getTodos() {
+    return this.#todos;
+  }
+}
+
 class TodosController {
-  #todo;
+  #todos;
   #view;
   #inputController;
 
-  constructor(todo, view, inputController) {
-    this.#todo = todo;
+  constructor(todos, view, inputController) {
+    this.#todos = todos;
     this.#view = view;
     this.#inputController = inputController;
   }
 
-  #onNewTodo(taskMessage) {
-    if (taskMessage === "") return;
-    this.#todo.addTask(taskMessage);
-    this.#view.render(this.#todo.getTasks());
+  #onNewTask({ todoId, description }) {
+    this.#todos.addTask({ todoId, description });
+    this.#view.render(this.#todos.getTodos());
   }
 
-  #onMarkOrUnmark(id) {
-    this.#todo.markOrUnmarkTask(id);
-    this.#view.render(this.#todo.getTasks());
+  #onNewTodo(title) {
+    this.#todos.addTodo(title);
+    this.#view.render(this.#todos.getTodos());
   }
 
-  #onDelete(id) {
-    this.#todo.deleteTask(id);
-    this.#view.render(this.#todo.getTasks());
+  #onMarkOrUnmark({ taskId, todoId }) {
+    this.#todos.markOrUnmarkTask({ taskId, todoId });
+    this.#view.render(this.#todos.getTodos());
   }
 
-  #onSort() {
-    this.#todo.setOrderToAlphabetic();
-    this.#view.render(this.#todo.getTasks());
+  #onRemove({ taskId, todoId }) {
+    this.#todos.removeTask({ taskId, todoId });
+    this.#view.render(this.#todos.getTodos());
   }
 
-  #onGroup() {
-    this.#todo.setOrderToGroup();
-    this.#view.render(this.#todo.getTasks());
+  #onAlphabeticSort(todoId) {
+    this.#todos.sortTodoBy(todoId, { alphabetic: true });
+    this.#view.render(this.#todos.getTodos());
   }
 
-  #onDefault() {
-    this.#todo.setOrderToDefault();
-    this.#view.render(this.#todo.getTasks());
+  #onStatusSort(todoId) {
+    this.#todos.sortTodoBy(todoId, { status: true });
+    this.#view.render(this.#todos.getTodos());
+  }
+
+  #onDateSort(todoId) {
+    this.#todos.sortTodoBy(todoId, { date: true });
+    this.#view.render(this.#todos.getTodos());
   }
 
   start() {
-    this.#inputController.onNewTask((message) => this.#onNewTodo(message));
-    this.#inputController.onSort(() => this.#onSort());
-    this.#inputController.onGroup(() => this.#onGroup());
-    this.#inputController.onDefault(() => this.#onDefault());
-    this.#view.registerMarkListener((id) => this.#onMarkOrUnmark(id));
-    this.#view.registerDeleteListener((id) => this.#onDelete(id));
+    this.#inputController.onNewTodo((title) => this.#onNewTodo(title));
+    this.#view.on("addTask", (task) => this.#onNewTask(task));
+    this.#view.on("markTask", (ids) => this.#onMarkOrUnmark(ids));
+    this.#view.on("removeTask", (ids) => this.#onRemove(ids));
+    this.#view.on("alphabeticSort", (id) => this.#onAlphabeticSort(id));
+    this.#view.on("dateSort", (id) => this.#onDateSort(id));
+    this.#view.on("statusSort", (id) => this.#onStatusSort(id));
   }
 }
 
 class MouseController {
   #addButtonElement;
   #inputboxElement;
-  #sortButton;
-  #groupButton;
-  #defaultButton;
 
-  constructor(
-    addButtonElement,
-    inputboxElement,
-    sortButton,
-    groupButton,
-    defaultButton
-  ) {
+  constructor(addButtonElement, inputboxElement) {
     this.#addButtonElement = addButtonElement;
     this.#inputboxElement = inputboxElement;
-    this.#sortButton = sortButton;
-    this.#groupButton = groupButton;
-    this.#defaultButton = defaultButton;
   }
 
   #resetInputBox() {
     this.#inputboxElement.value = "";
   }
 
-  onNewTask(listener) {
+  onNewTodo(listener) {
     this.#addButtonElement.onclick = () => {
-      const taskMessage = this.#inputboxElement.value;
+      const title = this.#inputboxElement.value;
+      if (!title.trim()) return;
 
       this.#resetInputBox();
-      listener(taskMessage);
+      listener(title);
     };
-  }
-
-  onSort(listener) {
-    this.#sortButton.onclick = listener;
-  }
-
-  onGroup(listener) {
-    this.#groupButton.onclick = listener;
-  }
-
-  onDefault(listener) {
-    this.#defaultButton.onclick = listener;
   }
 }
 
 class TodosView {
   #todosContainer;
-  #markListener;
-  #deleteListener;
+  #listeners;
 
   constructor(todosContainer) {
     this.#todosContainer = todosContainer;
+    this.#listeners = {};
+  }
+
+  on(eventName, listener) {
+    this.#listeners[eventName] = listener;
   }
 
   #styleOnMarkOrUnmark(taskMessage, checkbox) {
@@ -201,104 +245,182 @@ class TodosView {
     checkbox.value = "unmark";
   }
 
-  #createDeleteButton(id) {
+  #createRemoveButton(taskId, todoId) {
     const deleteButton = document.createElement("input");
-    const deleteButtonId = `delete-${id}`;
 
     deleteButton.type = "button";
     deleteButton.value = "delete";
-    deleteButton.classList.add("delete-button");
-    deleteButton.id = deleteButtonId;
 
     deleteButton.onclick = () => {
-      const deleteButtonId = +deleteButton.id.split("-")[1];
-      this.#deleteListener(deleteButtonId);
+      this.#listeners.removeTask({ taskId, todoId });
     };
 
     return deleteButton;
   }
 
-  #createMarkButton(id) {
+  #createMarkButton(taskId, todoId) {
     const markButton = document.createElement("input");
-    const markButtonId = `mark-${id}`;
 
     markButton.type = "button";
     markButton.value = "mark";
-    markButton.classList.add("checkbox");
-    markButton.id = markButtonId;
 
     markButton.onclick = () => {
-      const markButtonId = +markButton.id.split("-")[1];
-      this.#markListener(markButtonId);
+      this.#listeners.markTask({ taskId, todoId });
     };
 
     return markButton;
   }
 
-  #createTaskElement(task) {
+  #createAlphabeticSortButton(todoId) {
+    const alphabeticButton = document.createElement("input");
+
+    alphabeticButton.type = "button";
+    alphabeticButton.value = "A-Z";
+
+    alphabeticButton.onclick = () => {
+      this.#listeners.alphabeticSort(todoId);
+    };
+
+    return alphabeticButton;
+  }
+
+  #createStatusSortButton(todoId) {
+    const statusButton = document.createElement("input");
+
+    statusButton.type = "button";
+    statusButton.value = "Status";
+
+    statusButton.onclick = () => {
+      this.#listeners.statusSort(todoId);
+    };
+
+    return statusButton;
+  }
+
+  #createDateSortButton(todoId) {
+    const dateButton = document.createElement("input");
+
+    dateButton.type = "button";
+    dateButton.value = "Date";
+
+    dateButton.onclick = () => {
+      this.#listeners.dateSort(todoId);
+    };
+
+    return dateButton;
+  }
+
+  #createAddTaskButton() {
+    const addTaskButton = document.createElement("input");
+
+    addTaskButton.type = "button";
+    addTaskButton.value = "Add Task";
+
+    return addTaskButton;
+  }
+
+  #createTaskElement(task, todoId) {
     const taskElement = document.createElement("section");
     const taskMessage = document.createElement("p");
-    const markButton = this.#createMarkButton(task.id);
-    const deleteButton = this.#createDeleteButton(task.id);
+
+    const markButton = this.#createMarkButton(task.id, todoId);
+    const deleteButton = this.#createRemoveButton(task.id, todoId);
 
     if (task.isDone()) this.#styleOnMarkOrUnmark(taskMessage, markButton);
 
     taskMessage.innerText = task.description;
-    taskElement.appendChild(taskMessage);
-    taskElement.appendChild(markButton);
-    taskElement.appendChild(deleteButton);
+    taskElement.append(taskMessage, markButton, deleteButton);
     taskElement.classList.add("task");
 
     return taskElement;
   }
 
-  #removeTasks() {
+  #createTitleElement(title, todoId) {
+    const titleElement = document.createElement("section");
+    const buttons = document.createElement("section");
+    const heading = document.createElement("h2");
+
+    heading.innerText = title;
+    titleElement.classList.add("flex");
+    buttons.classList.add("flex");
+
+    const statusButton = this.#createStatusSortButton(todoId);
+    const alphabeticSortButton = this.#createAlphabeticSortButton(todoId);
+    const dateSortButton = this.#createDateSortButton(todoId);
+
+    buttons.append(statusButton, alphabeticSortButton, dateSortButton);
+    titleElement.append(heading, buttons);
+
+    return titleElement;
+  }
+
+  #createInputBox() {
+    const inputBox = document.createElement("input");
+    inputBox.type = "text";
+    inputBox.placeholder = "Enter a task...";
+    return inputBox;
+  }
+
+  #createInputSection(todoId) {
+    const inputSection = document.createElement("section");
+
+    const inputBox = this.#createInputBox();
+    const addTaskButton = this.#createAddTaskButton();
+    inputSection.append(inputBox, addTaskButton);
+
+    addTaskButton.onclick = () => {
+      const description = inputBox.value;
+      if (!description.trim()) return;
+
+      this.#listeners.addTask({ description, todoId });
+    };
+
+    return inputSection;
+  }
+
+  #createTodoSection(todo) {
+    const todoSection = document.createElement("article");
+    const titleElement = this.#createTitleElement(todo.title, todo.id);
+    const inputSection = this.#createInputSection(todo.id);
+    todoSection.append(titleElement, inputSection);
+
+    todo.getTasks().forEach((task) => {
+      const todoElement = this.#createTaskElement(task, todo.id);
+      todoSection.appendChild(todoElement);
+    });
+
+    return todoSection;
+  }
+
+  #removeTodos() {
     [...this.#todosContainer.children].forEach((child) =>
       this.#todosContainer.removeChild(child)
     );
   }
 
-  registerMarkListener(listener) {
-    this.#markListener = listener;
-  }
+  render(todos) {
+    this.#removeTodos();
 
-  registerDeleteListener(listener) {
-    this.#deleteListener = listener;
-  }
-
-  render(tasks) {
-    this.#removeTasks();
-
-    tasks.forEach((task) => {
-      const taskElement = this.#createTaskElement(task);
-      this.#todosContainer.appendChild(taskElement);
+    todos.forEach((todo) => {
+      const todoElement = this.#createTodoSection(todo);
+      this.#todosContainer.appendChild(todoElement);
     });
   }
 }
 
-const createMouseController = () => {
-  const addButton = document.querySelector("#add-button");
-  const inputBox = document.querySelector("#input-box");
-  const defaultButton = document.querySelector("#creation-sort-button");
-  const sortButton = document.querySelector("#alphabetic-sort-button");
-  const groupButton = document.querySelector("#group-button");
-
-  return new MouseController(
-    addButton,
-    inputBox,
-    sortButton,
-    groupButton,
-    defaultButton
-  );
-};
-
 const main = () => {
-  const tasksContainer = document.querySelector("#tasks-container");
+  const todosContainer = document.querySelector("#todos-container");
+  const titleInputBox = document.querySelector("#input-box");
+  const addTitleButton = document.querySelector("#add-button");
 
-  const todo = new Todo();
-  const todosView = new TodosView(tasksContainer);
-  const mouseController = createMouseController();
-  const todosController = new TodosController(todo, todosView, mouseController);
+  const todos = new Todos();
+  const todosView = new TodosView(todosContainer);
+  const mouseController = new MouseController(addTitleButton, titleInputBox);
+  const todosController = new TodosController(
+    todos,
+    todosView,
+    mouseController
+  );
 
   todosController.start();
 };

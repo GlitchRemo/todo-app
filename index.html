@@ -5,83 +5,14 @@
   </head>
   <body>
     <header>
-      <h1>Task</h1>
+      <h1>TODO</h1>
     </header>
-    <main class="todos">
-      <article class="task-list" id="task-list-1">
-        <header class="title"><h2>Office Task</h2></header>
-        <section class="add-task">
-          <input type="text" id="input-box" placeholder="Enter a task" />
-          <input type="button" id="add-button" class="button" value="Add" />
-        </section>
-        <section class="buttons">
-          <input
-            type="button"
-            id="creation-sort-button"
-            class="button"
-            value="Sort By Creation Date"
-          />
-          <input
-            type="button"
-            id="alphabetic-sort-button"
-            class="button"
-            value="Sort Alphabetically"
-          />
-          <input
-            type="button"
-            id="group-button"
-            class="button"
-            value="Group By Done"
-          />
-        </section>
-        <section id="tasks-container"></section>
-      </article>
-
-      <article class="task-list" id="task-list-2">
-        <header class="title"><h2>Fitness Task</h2></header>
-        <section class="add-task">
-          <input type="text" id="input-box" placeholder="Enter a task" />
-          <input type="button" id="add-button" class="button" value="Add" />
-        </section>
-        <section class="buttons">
-          <input
-            type="button"
-            id="sort-button"
-            class="button"
-            value="Sort Alphabetically"
-          />
-          <input
-            type="button"
-            id="group-button"
-            class="button"
-            value="Group By Done"
-          />
-        </section>
-        <section id="tasks-container"></section>
-      </article>
-
-      <article class="task-list" id="task-list-3">
-        <header class="title"><h2>Office Task</h2></header>
-        <section class="add-task">
-          <input type="text" id="input-box" placeholder="Enter a task" />
-          <input type="button" id="add-button" class="button" value="Add" />
-        </section>
-        <section class="buttons">
-          <input
-            type="button"
-            id="sort-button"
-            class="button"
-            value="Sort Alphabetically"
-          />
-          <input
-            type="button"
-            id="group-button"
-            class="button"
-            value="Group By Done"
-          />
-        </section>
-        <section id="tasks-container"></section>
-      </article>
+    <main>
+      <section id="add-title" class="flex">
+        <input type="text" id="input-box" placeholder="Enter a title..." />
+        <input type="button" value="Add Title" id="add-button" />
+      </section>
+      <section id="todos-container"></section>
     </main>
   </body>
 </html>

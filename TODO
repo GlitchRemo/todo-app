@@ -1,1 +1,4 @@
-- change order of todo comparison in string
+- change order of todo comparison in string --> {"creation date": true, "alphabetic": true, "grouped": true }
+- class named id generator
+- make interaction of view with the model to get the heading through controller
+- ids to elements

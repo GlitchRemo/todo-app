@@ -21,9 +21,10 @@ body {
   justify-content: space-between;
 }
 
-.add-task {
+.flex {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 #input-box {
