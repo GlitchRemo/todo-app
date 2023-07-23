@@ -240,37 +240,6 @@ class TodosView {
     this.#listeners[eventName] = listener;
   }
 
-  #styleOnMarkOrUnmark(taskMessage, checkbox) {
-    taskMessage.classList.add("strike");
-    checkbox.value = "unmark";
-  }
-
-  #createRemoveButton(taskId, todoId) {
-    const deleteButton = document.createElement("input");
-
-    deleteButton.type = "button";
-    deleteButton.value = "delete";
-
-    deleteButton.onclick = () => {
-      this.#listeners.removeTask({ taskId, todoId });
-    };
-
-    return deleteButton;
-  }
-
-  #createMarkButton(taskId, todoId) {
-    const markButton = document.createElement("input");
-
-    markButton.type = "button";
-    markButton.value = "mark";
-
-    markButton.onclick = () => {
-      this.#listeners.markTask({ taskId, todoId });
-    };
-
-    return markButton;
-  }
-
   #createAlphabeticSortButton(todoId) {
     const alphabeticButton = document.createElement("input");
 
@@ -319,21 +288,63 @@ class TodosView {
     return addTaskButton;
   }
 
+  #createRemoveButton(task, todoId) {
+    const deleteButton = document.createElement("input");
+
+    deleteButton.type = "button";
+    deleteButton.value = "remove";
+
+    deleteButton.onclick = () => {
+      this.#listeners.removeTask({ taskId: task.id, todoId });
+    };
+
+    return deleteButton;
+  }
+
+  #createTaskDescription(task, todoId) {
+    const descriptionElement = document.createElement("section");
+
+    const description = document.createElement("li");
+    description.innerText = task.description;
+    descriptionElement.append(description);
+
+    if (task.isDone()) {
+      description.classList.add("strike");
+    }
+
+    descriptionElement.onclick = () => {
+      this.#listeners.markTask({ taskId: task.id, todoId });
+    };
+
+    return descriptionElement;
+  }
+
   #createTaskElement(task, todoId) {
     const taskElement = document.createElement("section");
-    const taskMessage = document.createElement("p");
 
-    const markButton = this.#createMarkButton(task.id, todoId);
-    const deleteButton = this.#createRemoveButton(task.id, todoId);
-
-    if (task.isDone()) this.#styleOnMarkOrUnmark(taskMessage, markButton);
-
-    taskMessage.innerText = task.description;
-    taskElement.append(taskMessage, markButton, deleteButton);
+    const descriptionElement = this.#createTaskDescription(task, todoId);
+    const removeButton = this.#createRemoveButton(task, todoId);
+    taskElement.append(descriptionElement, removeButton);
     taskElement.classList.add("task");
 
     return taskElement;
   }
+
+  // #createTaskElement(task, todoId) {
+  //   const taskElement = document.createElement("section");
+  //   const taskMessage = document.createElement("p");
+
+  //   const markButton = this.#createMarkButton(task.id, todoId);
+  //   const deleteButton = this.#createRemoveButton(task.id, todoId);
+
+  //   if (task.isDone()) this.#styleOnMarkOrUnmark(taskMessage, markButton);
+
+  //   taskMessage.innerText = task.description;
+  //   taskElement.append(taskMessage, markButton, deleteButton);
+  //   taskElement.classList.add("task");
+
+  //   return taskElement;
+  // }
 
   #createTitleElement(title, todoId) {
     const titleElement = document.createElement("section");
@@ -356,6 +367,7 @@ class TodosView {
 
   #createInputBox() {
     const inputBox = document.createElement("input");
+    inputBox.classList.add("input-box");
     inputBox.type = "text";
     inputBox.placeholder = "Enter a task...";
     return inputBox;
@@ -363,6 +375,7 @@ class TodosView {
 
   #createInputSection(todoId) {
     const inputSection = document.createElement("section");
+    inputSection.classList.add("flex");
 
     const inputBox = this.#createInputBox();
     const addTaskButton = this.#createAddTaskButton();
@@ -380,15 +393,21 @@ class TodosView {
 
   #createTodoSection(todo) {
     const todoSection = document.createElement("article");
+    const tasksSection = document.createElement("section");
+
     const titleElement = this.#createTitleElement(todo.title, todo.id);
     const inputSection = this.#createInputSection(todo.id);
+
     todoSection.append(titleElement, inputSection);
+    todoSection.classList.add("flex-column", "todo");
+    tasksSection.classList.add("flex-column", "tasks");
 
     todo.getTasks().forEach((task) => {
       const todoElement = this.#createTaskElement(task, todo.id);
-      todoSection.appendChild(todoElement);
+      tasksSection.appendChild(todoElement);
     });
 
+    todoSection.appendChild(tasksSection);
     return todoSection;
   }
 
@@ -410,7 +429,7 @@ class TodosView {
 
 const main = () => {
   const todosContainer = document.querySelector("#todos-container");
-  const titleInputBox = document.querySelector("#input-box");
+  const titleInputBox = document.querySelector(".input-box");
   const addTitleButton = document.querySelector("#add-button");
 
   const todos = new Todos();
