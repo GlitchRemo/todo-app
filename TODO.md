@@ -1,0 +1,5 @@
+- sort to dropdown, after add task section
+- class named id generator
+- ids to elements
+- group sort logic, cover 0, -1, 1
+- remove to bin icon
