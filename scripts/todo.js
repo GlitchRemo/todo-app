@@ -42,6 +42,7 @@ class Todo {
   }
 
   markOrUnmarkTask(id) {
+    console.log("hq", id, this.#tasks);
     this.#tasks.find((task) => task.id === id).toggleDoneStatus();
   }
 
@@ -74,5 +75,10 @@ class Todo {
   deleteTask(id) {
     const indexOfTaskToDelete = this.#tasks.findIndex((task) => task.id === id);
     this.#tasks.splice(indexOfTaskToDelete, 1);
+  }
+
+  getDetails() {
+    const tasks = this.getTasks().map((task) => task.getDetails());
+    return { todoId: this.#id, title: this.#title, tasks };
   }
 }

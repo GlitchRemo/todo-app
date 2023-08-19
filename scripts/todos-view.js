@@ -59,36 +59,36 @@ class TodosView {
     return addTaskButton;
   }
 
-  #createRemoveButton(task, todoId) {
+  #createRemoveButton({ taskId }, todoId) {
     const deleteButton = document.createElement("input");
 
     deleteButton.type = "button";
     deleteButton.value = "remove";
 
     deleteButton.onclick = () => {
-      this.#listeners.removeTask({ taskId: task.id, todoId });
+      this.#listeners.removeTask({ taskId, todoId });
     };
 
     return deleteButton;
   }
 
-  #createTaskDescription(task, todoId) {
+  #createTaskDescription({ taskId, description, isDone }, todoId) {
     const descriptionElement = document.createElement("section");
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
 
-    const description = document.createElement("label");
-    description.innerText = task.description;
-    descriptionElement.append(checkbox, description);
+    const descriptionTextElement = document.createElement("label");
+    descriptionTextElement.innerText = description;
+    descriptionElement.append(checkbox, descriptionTextElement);
 
-    if (task.isDone()) {
+    if (isDone) {
       checkbox.checked = true;
-      description.classList.add("strike");
+      descriptionTextElement.classList.add("strike");
     }
 
     checkbox.onchange = () => {
-      this.#listeners.markTask({ taskId: task.id, todoId });
+      this.#listeners.markTask({ taskId, todoId });
     };
 
     return descriptionElement;
@@ -150,19 +150,19 @@ class TodosView {
     return inputSection;
   }
 
-  #createTodoSection(todo) {
+  #createTodoSection({ title, todoId, tasks }) {
     const todoSection = document.createElement("article");
     const tasksSection = document.createElement("section");
 
-    const titleElement = this.#createTitleElement(todo.title, todo.id);
-    const inputSection = this.#createInputSection(todo.id);
+    const titleElement = this.#createTitleElement(title, todoId);
+    const inputSection = this.#createInputSection(todoId);
 
     todoSection.append(titleElement, inputSection);
     todoSection.classList.add("flex-column", "todo");
     tasksSection.classList.add("flex-column", "tasks");
 
-    todo.getTasks().forEach((task) => {
-      const todoElement = this.#createTaskElement(task, todo.id);
+    tasks.forEach((task) => {
+      const todoElement = this.#createTaskElement(task, todoId);
       tasksSection.appendChild(todoElement);
     });
 

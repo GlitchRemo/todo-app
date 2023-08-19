@@ -24,4 +24,12 @@ class Task {
   get id() {
     return this.#id;
   }
+
+  getDetails() {
+    return {
+      taskId: this.#id,
+      description: this.description,
+      isDone: this.#done,
+    };
+  }
 }

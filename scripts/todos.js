@@ -37,4 +37,8 @@ class Todos {
   getTodos() {
     return this.#todos;
   }
+
+  getDetails() {
+    return this.#todos.map((todo) => todo.getDetails());
+  }
 }
