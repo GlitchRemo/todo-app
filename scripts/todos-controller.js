@@ -11,43 +11,43 @@ class TodosController {
     this.#inputController = inputController;
   }
 
-  #onNewTask({ todoId, description }) {
+  #addTask({ todoId, description }) {
     this.#todos.addTask({ todoId, description });
     this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
-  #onNewTodo(title) {
+  #addTodo(title) {
     this.#todos.addTodo(title);
     this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
-  #onMarkOrUnmark({ taskId, todoId, isDone }) {
+  #markOrUnmarkTask({ taskId, todoId, isDone }) {
     this.#todos.markOrUnmarkTask({ taskId, todoId, isDone });
     this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
-  #onRemove({ taskId, todoId }) {
+  #removeTask({ taskId, todoId }) {
     this.#todos.removeTask({ taskId, todoId });
     this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
-  #onAlphabeticSort(todoId) {
+  #sortTodoAlphabetically(todoId) {
     this.#todos.sortTodoBy(todoId, { alphabetic: true });
     this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
-  #onStatusSort(todoId) {
+  #sortTodoByStatus(todoId) {
     this.#todos.sortTodoBy(todoId, { status: true });
     this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
-  #onDateSort(todoId) {
+  #sortTodoByDate(todoId) {
     this.#todos.sortTodoBy(todoId, { date: true });
     this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
@@ -71,12 +71,12 @@ class TodosController {
 
   start() {
     this.#reloadTodos();
-    this.#inputController.onNewTodo((title) => this.#onNewTodo(title));
-    this.#view.on("addTask", (task) => this.#onNewTask(task));
-    this.#view.on("markTask", (ids) => this.#onMarkOrUnmark(ids));
-    this.#view.on("removeTask", (ids) => this.#onRemove(ids));
-    this.#view.on("alphabeticSort", (id) => this.#onAlphabeticSort(id));
-    this.#view.on("dateSort", (id) => this.#onDateSort(id));
-    this.#view.on("statusSort", (id) => this.#onStatusSort(id));
+    this.#inputController.onNewTodo((title) => this.#addTodo(title));
+    this.#view.on("addTask", (task) => this.#addTask(task));
+    this.#view.on("markTask", (ids) => this.#markOrUnmarkTask(ids));
+    this.#view.on("removeTask", (ids) => this.#removeTask(ids));
+    this.#view.on("alphabeticSort", (id) => this.#sortTodoAlphabetically(id));
+    this.#view.on("dateSort", (id) => this.#sortTodoByDate(id));
+    this.#view.on("statusSort", (id) => this.#sortTodoByStatus(id));
   }
 }
