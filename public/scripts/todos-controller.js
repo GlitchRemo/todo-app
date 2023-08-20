@@ -71,7 +71,9 @@ class TodosController {
 
   start() {
     this.#reloadTodos();
+
     this.#inputController.onNewTodo((title) => this.#addTodo(title));
+
     this.#view.on("addTask", (task) => this.#addTask(task));
     this.#view.on("markTask", (ids) => this.#markOrUnmarkTask(ids));
     this.#view.on("removeTask", (ids) => this.#removeTask(ids));
