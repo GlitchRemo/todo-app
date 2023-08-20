@@ -8,26 +8,30 @@ class RequestHandler {
     this.#todos = todos;
   }
 
+  #logTodos() {
+    console.log(JSON.stringify(this.#todos.getDetails()));
+  }
+
   handleMethodNotAllowed(_, response) {
     response.statusCode = 405;
     response.end("Method not allowed");
   }
 
-  handlePageNotFound(request, response) {
+  #handlePageNotFound(request, response) {
     response.statusCode = 404;
     response.end(`${request.url} Not Found`);
   }
 
-  handleMisdirectedRequest(_, response) {
+  #handleMisdirectedRequest(_, response) {
     response.statusCode = 421;
     response.end("Misdirected Response");
   }
 
-  resolveFilePath(url) {
+  #resolveFilePath(url) {
     return `./public${url}`;
   }
 
-  sendResponse(request, response, content) {
+  #sendResponse(request, response, content) {
     const headers = getHeaders(request.url);
 
     Object.entries(headers).forEach(([name, value]) =>
@@ -43,17 +47,17 @@ class RequestHandler {
 
   serveStaticPage(request, response) {
     if (request.url.includes(".."))
-      return this.handleMisdirectedRequest(request, response);
+      return this.#handleMisdirectedRequest(request, response);
 
-    const filePath = this.resolveFilePath(request.url);
+    const filePath = this.#resolveFilePath(request.url);
 
     fs.readFile(filePath, (err, content) => {
       if (err) {
-        this.handlePageNotFound(request, response);
+        this.#handlePageNotFound(request, response);
         return;
       }
 
-      this.sendResponse(request, response, content);
+      this.#sendResponse(request, response, content);
     });
   }
 
@@ -73,8 +77,11 @@ class RequestHandler {
     request.on("end", () => {
       const { title } = JSON.parse(body);
       this.#todos.addTodo(title);
+
       response.statusCode = 201;
       response.end();
+
+      this.#logTodos();
     });
   }
 
@@ -88,8 +95,30 @@ class RequestHandler {
     request.on("end", () => {
       const { todoId, description } = JSON.parse(body);
       this.#todos.addTask({ todoId, description });
+
       response.statusCode = 201;
       response.end();
+
+      this.#logTodos();
+    });
+  }
+
+  handlePatchTaskRequest(request, response) {
+    console.log("hello");
+    let body = "";
+
+    request.on("data", (chunk) => {
+      body += chunk;
+    });
+
+    request.on("end", () => {
+      const { todoId, taskId, isDone } = JSON.parse(body);
+      this.#todos.markOrUnmarkTask({ todoId, taskId, isDone });
+
+      response.statusCode = 201;
+      response.end();
+
+      this.#logTodos();
     });
   }
 }

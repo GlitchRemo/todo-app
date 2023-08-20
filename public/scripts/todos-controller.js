@@ -11,11 +11,6 @@ class TodosController {
     this.#inputController = inputController;
   }
 
-  #getTaskId(todoId) {
-    const todo = this.#todos.getTodos().find((todo) => todo.id === todoId);
-    return todo.getTasks().length + 1;
-  }
-
   #addTask({ todoId, description }) {
     this.#databaseService.addTask(todoId, description, (todoDetails) => {
       console.log(todoDetails);
@@ -26,15 +21,21 @@ class TodosController {
   #addTodo(title) {
     this.#databaseService.addTodo(title, (todoDetails) => {
       console.log(todoDetails);
-
       this.#view.render(todoDetails);
     });
   }
 
   #markOrUnmarkTask({ taskId, todoId, isDone }) {
-    this.#todos.markOrUnmarkTask({ taskId, todoId, isDone });
-    this.#databaseService.update(this.#todos.getDetails());
-    this.#view.render(this.#todos.getDetails());
+    console.log("marked", taskId, todoId, isDone);
+    this.#databaseService.updateTodoStatus(
+      todoId,
+      taskId,
+      isDone,
+      (todoDetails) => {
+        console.log(todoDetails);
+        this.#view.render(todoDetails);
+      }
+    );
   }
 
   #removeTask({ taskId, todoId }) {
@@ -58,19 +59,18 @@ class TodosController {
     this.#view.render(this.#todos.getDetails());
   }
 
-  #createTodo({ todoId, tasks, title }) {
-    this.#todos.addTodo(title, todoId);
+  // #createTodo({ todoId, tasks, title }) {
+  //   this.#todos.addTodo(title, todoId);
 
-    tasks.forEach(({ taskId, description, isDone }) => {
-      this.#todos.addTask({ todoId, description, taskId });
-      this.#todos.markOrUnmarkTask({ taskId, todoId, isDone });
-    });
-  }
+  //   tasks.forEach(({ taskId, description, isDone }) => {
+  //     this.#todos.addTask({ todoId, description, taskId });
+  //     this.#todos.markOrUnmarkTask({ taskId, todoId, isDone });
+  //   });
+  // }
 
   #reloadTodos() {
     this.#databaseService.fetchTodos((todos) => {
-      todos.forEach((todo) => this.#createTodo(todo));
-      this.#view.render(this.#todos.getDetails());
+      this.#view.render(todos);
     });
   }
 

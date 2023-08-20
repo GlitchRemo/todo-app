@@ -14,6 +14,7 @@ class Router {
   route(request, response) {
     const router = this.#handlers.find(({ method, route }) => {
       const routeRegex = new RegExp(route);
+
       return (
         routeRegex.test(request.url) &&
         (method === request.method || method === "ANY")
@@ -43,6 +44,10 @@ const createRouter = () => {
 
   router.addHandler("POST", "^/todos/tasks$", (req, res) =>
     requestHandler.handlePostTaskRequest(req, res)
+  );
+
+  router.addHandler("PATCH", "^/todos/tasks/task$", (req, res) =>
+    requestHandler.handlePatchTaskRequest(req, res)
   );
 
   router.addHandler("GET", "^.*$", (req, res) =>
