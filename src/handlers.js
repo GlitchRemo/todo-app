@@ -1,76 +1,82 @@
 const fs = require("fs");
 const { getHeaders } = require("./headers");
 
-const handleMethodNotAllowed = (_, response) => {
-  response.statusCode = 405;
-  response.end("Method not allowed");
-};
+class RequestHandler {
+  #todos;
 
-const handlePageNotFound = (request, response) => {
-  response.statusCode = 404;
-  response.end(`${request.url} Not Found`);
-};
+  constructor(todos) {
+    this.#todos = todos;
+  }
 
-const resolveFilePath = (url) => `./public${url}`;
+  handleMethodNotAllowed(_, response) {
+    response.statusCode = 405;
+    response.end("Method not allowed");
+  }
 
-const sendResponse = (request, response, content) => {
-  const headers = getHeaders(request.url);
+  handlePageNotFound(request, response) {
+    response.statusCode = 404;
+    response.end(`${request.url} Not Found`);
+  }
 
-  Object.entries(headers).forEach(([name, value]) =>
-    response.setHeader(name, value)
-  );
+  handleMisdirectedRequest(_, response) {
+    response.statusCode = 421;
+    response.end("Misdirected Response");
+  }
 
-  response.end(content);
-};
+  resolveFilePath(url) {
+    return `./public${url}`;
+  }
 
-const redirectToHomepage = (_, response) => {
-  response.writeHead(303, { location: "/index.html" }).end();
-};
+  sendResponse(request, response, content) {
+    const headers = getHeaders(request.url);
 
-const serveStaticPage = (request, response) => {
-  if (request.url.includes(".."))
-    return handleMisdirectedRequest(request, response);
+    Object.entries(headers).forEach(([name, value]) =>
+      response.setHeader(name, value)
+    );
 
-  const filePath = resolveFilePath(request.url);
+    response.end(content);
+  }
 
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      handlePageNotFound(request, response);
-      return;
-    }
+  redirectToHomepage(_, response) {
+    response.writeHead(303, { location: "/index.html" }).end();
+  }
 
-    sendResponse(request, response, content);
-  });
-};
+  serveStaticPage(request, response) {
+    if (request.url.includes(".."))
+      return this.handleMisdirectedRequest(request, response);
 
-const sendTodos = (request, response) => {
-  const todos = [
-    {
-      todoId: 1,
-      title: "Office",
-      tasks: [
-        { taskId: 1, description: "ab todo", isDone: true },
-        { taskId: 2, description: "c todo", isDone: false },
-      ],
-    },
-    {
-      todoId: 2,
-      title: "Personal",
-      tasks: [
-        { taskId: 3, description: "c todo", isDone: false },
-        { taskId: 2, description: "d todo", isDone: true },
-      ],
-    },
-  ];
+    const filePath = this.resolveFilePath(request.url);
 
-  response
-    .writeHead(201, { "Content-Type": "application/json" })
-    .end(JSON.stringify(todos));
-};
+    fs.readFile(filePath, (err, content) => {
+      if (err) {
+        this.handlePageNotFound(request, response);
+        return;
+      }
 
-module.exports = {
-  redirectToHomepage,
-  handleMethodNotAllowed,
-  serveStaticPage,
-  sendTodos,
-};
+      this.sendResponse(request, response, content);
+    });
+  }
+
+  sendTodos(request, response) {
+    response
+      .writeHead(201, { "Content-Type": "application/json" })
+      .end(JSON.stringify(this.#todos.getDetails()));
+  }
+
+  handlePostTodoRequest(request, response) {
+    let body = "";
+
+    request.on("data", (chunk) => {
+      body += chunk;
+    });
+
+    request.on("end", () => {
+      const { title } = JSON.parse(body);
+      this.#todos.addTodo(title);
+      response.statusCode = 201;
+      response.end();
+    });
+  }
+}
+
+module.exports = { RequestHandler };

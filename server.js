@@ -1,14 +1,12 @@
 const http = require("node:http");
-const fs = require("node:fs");
 const { createRouter } = require("./src/router");
 
 const logRequest = (request) => console.log(">", request.method, request.url);
 
-const setupServer = () => {
+const setupServer = (router) => {
   const server = http.createServer((req, res) => {
     logRequest(req);
 
-    const router = createRouter();
     router.route(req, res);
   });
 
@@ -17,7 +15,8 @@ const setupServer = () => {
 };
 
 const main = () => {
-  setupServer();
+  const router = createRouter();
+  setupServer(router);
 };
 
 main();

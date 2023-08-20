@@ -1,18 +1,14 @@
 class TodosController {
   #todos;
-  #todosStorage;
+  #databaseService;
   #view;
   #inputController;
 
-  constructor(todos, todosStorage, view, inputController) {
+  constructor(todos, databaseService, view, inputController) {
     this.#todos = todos;
-    this.#todosStorage = todosStorage;
+    this.#databaseService = databaseService;
     this.#view = view;
     this.#inputController = inputController;
-  }
-
-  #getTodoId() {
-    return this.#todos.getTodos().length + 1;
   }
 
   #getTaskId(todoId) {
@@ -24,29 +20,26 @@ class TodosController {
     const taskId = this.#getTaskId(todoId);
     this.#todos.addTask({ todoId, description, taskId });
 
-    this.#todosStorage.update(this.#todos.getDetails());
+    this.#databaseService.update(this.#todos.getDetails());
 
     this.#view.render(this.#todos.getDetails());
   }
 
   #addTodo(title) {
-    const todoId = this.#getTodoId();
-    this.#todos.addTodo(title, todoId);
-
-    this.#todosStorage.update(this.#todos.getDetails());
-
-    this.#view.render(this.#todos.getDetails());
+    this.#databaseService.addTodo(title, (todoDetails) => {
+      this.#view.render(todoDetails);
+    });
   }
 
   #markOrUnmarkTask({ taskId, todoId, isDone }) {
     this.#todos.markOrUnmarkTask({ taskId, todoId, isDone });
-    this.#todosStorage.update(this.#todos.getDetails());
+    this.#databaseService.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
   #removeTask({ taskId, todoId }) {
     this.#todos.removeTask({ taskId, todoId });
-    this.#todosStorage.update(this.#todos.getDetails());
+    this.#databaseService.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
@@ -75,7 +68,7 @@ class TodosController {
   }
 
   #reloadTodos() {
-    this.#todosStorage.fetch((todos) => {
+    this.#databaseService.fetchTodos((todos) => {
       todos.forEach((todo) => this.#createTodo(todo));
       this.#view.render(this.#todos.getDetails());
     });

@@ -1,9 +1,5 @@
-const {
-  redirectToHomepage,
-  serveStaticPage,
-  handleMethodNotAllowed,
-  sendTodos,
-} = require("./handlers");
+const { RequestHandler } = require("./handlers");
+const { Todos } = require("./todos");
 
 class Router {
   #handlers;
@@ -24,18 +20,34 @@ class Router {
       );
     });
 
-    console.log(router.handler);
     router.handler(request, response);
   }
 }
 
 const createRouter = () => {
   const router = new Router();
+  const todos = new Todos();
+  const requestHandler = new RequestHandler(todos);
 
-  router.addHandler("GET", "^/$", redirectToHomepage);
-  router.addHandler("GET", "^/todos$", sendTodos);
-  router.addHandler("GET", "^.*$", serveStaticPage);
-  router.addHandler("ANY", "^.*$", handleMethodNotAllowed);
+  router.addHandler("GET", "^/$", (req, res) =>
+    requestHandler.redirectToHomepage(req, res)
+  );
+
+  router.addHandler("GET", "^/todos$", (req, res) =>
+    requestHandler.sendTodos(req, res)
+  );
+
+  router.addHandler("POST", "^/todos$", (req, res) =>
+    requestHandler.handlePostTodoRequest(req, res)
+  );
+
+  router.addHandler("GET", "^.*$", (req, res) =>
+    requestHandler.serveStaticPage(req, res)
+  );
+
+  router.addHandler("ANY", "^.*$", (req, res) =>
+    requestHandler.handleMethodNotAllowed(req, res)
+  );
 
   return router;
 };

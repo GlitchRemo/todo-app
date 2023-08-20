@@ -1,14 +1,20 @@
-class TodosStorage {
+class DatabaseService {
   #localStorage;
 
   constructor(localStorage) {
     this.#localStorage = localStorage;
   }
 
-  fetch(createTodos) {
+  fetchTodos(onFetch) {
     fetch("/todos")
       .then((res) => res.json())
-      .then(createTodos);
+      .then(onFetch);
+  }
+
+  addTodo(title, onNewTodo) {
+    fetch("/todos", { method: "post", body: JSON.stringify({ title }) }).then(
+      () => this.fetchTodos(onNewTodo)
+    );
   }
 
   update(todos) {

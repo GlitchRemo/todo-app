@@ -4,12 +4,12 @@ const main = () => {
   const addTitleButton = document.querySelector("#add-button");
 
   const todos = new Todos();
-  const todosStorage = new TodosStorage(localStorage);
+  const databaseService = new DatabaseService(localStorage);
   const todosView = new TodosView(todosContainer);
   const mouseController = new MouseController(addTitleButton, titleInputBox);
   const todosController = new TodosController(
     todos,
-    todosStorage,
+    databaseService,
     todosView,
     mouseController
   );
