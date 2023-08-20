@@ -1,24 +1,16 @@
 class Todos {
   #todos;
-  #id;
 
   constructor() {
     this.#todos = [];
-    this.#id = 0;
   }
 
-  #generateId() {
-    this.#id++;
-    return this.#id;
+  addTodo(title, todoId) {
+    this.#todos.push(new Todo({ todoId, title }));
   }
 
-  addTodo(title) {
-    const id = this.#generateId();
-    this.#todos.push(new Todo({ id, title }));
-  }
-
-  addTask({ todoId, description }) {
-    this.#todos.find((todo) => todo.id === todoId).addTask(description);
+  addTask({ todoId, description, taskId }) {
+    this.#todos.find((todo) => todo.id === todoId).addTask(description, taskId);
   }
 
   removeTask({ todoId, taskId }) {

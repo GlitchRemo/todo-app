@@ -1,21 +1,14 @@
 class Todo {
   #tasks;
-  #id;
+  #todoId;
   #sortBy;
   #title;
-  #taskId;
 
-  constructor({ title, id }) {
+  constructor({ title, todoId }) {
     this.#title = title;
-    this.#id = id;
-    this.#taskId = 0;
+    this.#todoId = todoId;
     this.#tasks = [];
     this.#sortBy = { alphabetic: false, date: true, status: false };
-  }
-
-  #generateId() {
-    this.#taskId++;
-    return this.#taskId;
   }
 
   sortTodoBy({ alphabetic, status, date }) {
@@ -35,8 +28,7 @@ class Todo {
     }
   }
 
-  addTask(description) {
-    const taskId = this.#generateId();
+  addTask(description, taskId) {
     const task = new Task(description, taskId);
     this.#tasks.push(task);
   }
@@ -68,7 +60,7 @@ class Todo {
   }
 
   get id() {
-    return this.#id;
+    return this.#todoId;
   }
 
   deleteTask(id) {
@@ -79,9 +71,8 @@ class Todo {
   getDetails() {
     const tasks = this.getTasks().map((task) => task.getDetails());
     return {
-      todoId: this.#id,
+      todoId: this.#todoId,
       title: this.#title,
-      sortBy: this.#sortBy,
       tasks,
     };
   }

@@ -11,15 +11,30 @@ class TodosController {
     this.#inputController = inputController;
   }
 
+  #getTodoId() {
+    return this.#todos.getTodos().length + 1;
+  }
+
+  #getTaskId(todoId) {
+    const todo = this.#todos.getTodos().find((todo) => todo.id === todoId);
+    return todo.getTasks().length + 1;
+  }
+
   #addTask({ todoId, description }) {
-    this.#todos.addTask({ todoId, description });
+    const taskId = this.#getTaskId(todoId);
+    this.#todos.addTask({ todoId, description, taskId });
+
     this.#todosStorage.update(this.#todos.getDetails());
+
     this.#view.render(this.#todos.getDetails());
   }
 
   #addTodo(title) {
-    this.#todos.addTodo(title);
+    const todoId = this.#getTodoId();
+    this.#todos.addTodo(title, todoId);
+
     this.#todosStorage.update(this.#todos.getDetails());
+
     this.#view.render(this.#todos.getDetails());
   }
 
@@ -37,28 +52,24 @@ class TodosController {
 
   #sortTodoAlphabetically(todoId) {
     this.#todos.sortTodoBy(todoId, { alphabetic: true });
-    this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
   #sortTodoByStatus(todoId) {
     this.#todos.sortTodoBy(todoId, { status: true });
-    this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
   #sortTodoByDate(todoId) {
     this.#todos.sortTodoBy(todoId, { date: true });
-    this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
-  #createTodo({ todoId, tasks, title, sortBy }) {
-    this.#todos.addTodo(title);
-    this.#todos.sortTodoBy(todoId, sortBy);
+  #createTodo({ todoId, tasks, title }) {
+    this.#todos.addTodo(title, todoId);
 
     tasks.forEach(({ taskId, description, isDone }) => {
-      this.#todos.addTask({ todoId, description });
+      this.#todos.addTask({ todoId, description, taskId });
       this.#todos.markOrUnmarkTask({ taskId, todoId, isDone });
     });
   }
