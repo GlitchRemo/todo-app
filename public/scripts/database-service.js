@@ -17,6 +17,13 @@ class DatabaseService {
     );
   }
 
+  addTask(todoId, description, onNewTask) {
+    fetch(`/todos/tasks`, {
+      method: "post",
+      body: JSON.stringify({ description, todoId }),
+    }).then(() => this.fetchTodos(onNewTask));
+  }
+
   update(todos) {
     this.#localStorage.setItem("todos", JSON.stringify(todos));
   }

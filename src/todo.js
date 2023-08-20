@@ -3,14 +3,21 @@ const { Task } = require("./task");
 class Todo {
   #tasks;
   #todoId;
+  #taskId;
   #sortBy;
   #title;
 
   constructor({ title, todoId }) {
     this.#title = title;
     this.#todoId = todoId;
+    this.#taskId = 0;
     this.#tasks = [];
     this.#sortBy = { alphabetic: false, date: true, status: false };
+  }
+
+  #generateId() {
+    this.#taskId++;
+    return this.#taskId;
   }
 
   sortTodoBy({ alphabetic, status, date }) {
@@ -30,7 +37,8 @@ class Todo {
     }
   }
 
-  addTask(description, taskId) {
+  addTask(description) {
+    const taskId = this.#generateId();
     const task = new Task(description, taskId);
     this.#tasks.push(task);
   }

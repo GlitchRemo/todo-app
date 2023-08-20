@@ -19,8 +19,8 @@ class Todos {
     this.#todos.push(new Todo({ todoId, title }));
   }
 
-  addTask({ todoId, description, taskId }) {
-    this.#todos.find((todo) => todo.id === todoId).addTask(description, taskId);
+  addTask({ todoId, description }) {
+    this.#todos.find((todo) => todo.id === todoId).addTask(description);
   }
 
   removeTask({ todoId, taskId }) {

@@ -41,6 +41,10 @@ const createRouter = () => {
     requestHandler.handlePostTodoRequest(req, res)
   );
 
+  router.addHandler("POST", "^/todos/tasks$", (req, res) =>
+    requestHandler.handlePostTaskRequest(req, res)
+  );
+
   router.addHandler("GET", "^.*$", (req, res) =>
     requestHandler.serveStaticPage(req, res)
   );

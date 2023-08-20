@@ -77,6 +77,21 @@ class RequestHandler {
       response.end();
     });
   }
+
+  handlePostTaskRequest(request, response) {
+    let body = "";
+
+    request.on("data", (chunk) => {
+      body += chunk;
+    });
+
+    request.on("end", () => {
+      const { todoId, description } = JSON.parse(body);
+      this.#todos.addTask({ todoId, description });
+      response.statusCode = 201;
+      response.end();
+    });
+  }
 }
 
 module.exports = { RequestHandler };

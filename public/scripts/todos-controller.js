@@ -17,16 +17,16 @@ class TodosController {
   }
 
   #addTask({ todoId, description }) {
-    const taskId = this.#getTaskId(todoId);
-    this.#todos.addTask({ todoId, description, taskId });
-
-    this.#databaseService.update(this.#todos.getDetails());
-
-    this.#view.render(this.#todos.getDetails());
+    this.#databaseService.addTask(todoId, description, (todoDetails) => {
+      console.log(todoDetails);
+      this.#view.render(todoDetails);
+    });
   }
 
   #addTodo(title) {
     this.#databaseService.addTodo(title, (todoDetails) => {
+      console.log(todoDetails);
+
       this.#view.render(todoDetails);
     });
   }
