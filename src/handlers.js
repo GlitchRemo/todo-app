@@ -43,8 +43,34 @@ const serveStaticPage = (request, response) => {
   });
 };
 
+const sendTodos = (request, response) => {
+  const todos = [
+    {
+      todoId: 1,
+      title: "Office",
+      tasks: [
+        { taskId: 1, description: "ab todo", isDone: true },
+        { taskId: 2, description: "c todo", isDone: false },
+      ],
+    },
+    {
+      todoId: 2,
+      title: "Personal",
+      tasks: [
+        { taskId: 3, description: "c todo", isDone: false },
+        { taskId: 2, description: "d todo", isDone: true },
+      ],
+    },
+  ];
+
+  response
+    .writeHead(201, { "Content-Type": "application/json" })
+    .end(JSON.stringify(todos));
+};
+
 module.exports = {
   redirectToHomepage,
   handleMethodNotAllowed,
   serveStaticPage,
+  sendTodos,
 };

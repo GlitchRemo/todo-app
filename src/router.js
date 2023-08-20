@@ -1,13 +1,8 @@
 const {
   redirectToHomepage,
-  handleGetCommentsRequest,
-  handlePostCommentRequest,
-  handleGuestBookRequest,
-  handleLoginRequest,
   serveStaticPage,
   handleMethodNotAllowed,
-  sendUserCredential,
-  handleLogoutRequest,
+  sendTodos,
 } = require("./handlers");
 
 class Router {
@@ -38,6 +33,7 @@ const createRouter = () => {
   const router = new Router();
 
   router.addHandler("GET", "^/$", redirectToHomepage);
+  router.addHandler("GET", "^/todos$", sendTodos);
   router.addHandler("GET", "^.*$", serveStaticPage);
   router.addHandler("ANY", "^.*$", handleMethodNotAllowed);
 

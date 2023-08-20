@@ -75,9 +75,10 @@ class TodosController {
   }
 
   #reloadTodos() {
-    const todos = this.#todosStorage.fetch();
-    todos.forEach((todo) => this.#createTodo(todo));
-    this.#view.render(this.#todos.getDetails());
+    this.#todosStorage.fetch((todos) => {
+      todos.forEach((todo) => this.#createTodo(todo));
+      this.#view.render(this.#todos.getDetails());
+    });
   }
 
   start() {

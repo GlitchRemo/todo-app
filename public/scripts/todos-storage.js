@@ -5,8 +5,10 @@ class TodosStorage {
     this.#localStorage = localStorage;
   }
 
-  fetch() {
-    return JSON.parse(this.#localStorage.getItem("todos")) || [];
+  fetch(createTodos) {
+    fetch("/todos")
+      .then((res) => res.json())
+      .then(createTodos);
   }
 
   update(todos) {
