@@ -23,8 +23,8 @@ class TodosController {
     this.#view.render(this.#todos.getDetails());
   }
 
-  #onMarkOrUnmark({ taskId, todoId }) {
-    this.#todos.markOrUnmarkTask({ taskId, todoId });
+  #onMarkOrUnmark({ taskId, todoId, isDone }) {
+    this.#todos.markOrUnmarkTask({ taskId, todoId, isDone });
     this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
@@ -36,38 +36,36 @@ class TodosController {
   }
 
   #onAlphabeticSort(todoId) {
-    console.log(this.#todos.getDetails());
     this.#todos.sortTodoBy(todoId, { alphabetic: true });
+    this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
   #onStatusSort(todoId) {
     this.#todos.sortTodoBy(todoId, { status: true });
+    this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
   #onDateSort(todoId) {
     this.#todos.sortTodoBy(todoId, { date: true });
+    this.#todosStorage.update(this.#todos.getDetails());
     this.#view.render(this.#todos.getDetails());
   }
 
-  #createTodo({ todoId, tasks, title }) {
+  #createTodo({ todoId, tasks, title, sortBy }) {
     this.#todos.addTodo(title);
+    this.#todos.sortTodoBy(todoId, sortBy);
 
     tasks.forEach(({ taskId, description, isDone }) => {
       this.#todos.addTask({ todoId, description });
-
-      if (isDone) {
-        this.#todos.markOrUnmarkTask({ taskId, todoId });
-        return;
-      }
+      this.#todos.markOrUnmarkTask({ taskId, todoId, isDone });
     });
   }
 
   #reloadTodos() {
     const todos = this.#todosStorage.fetch();
     todos.forEach((todo) => this.#createTodo(todo));
-
     this.#view.render(this.#todos.getDetails());
   }
 

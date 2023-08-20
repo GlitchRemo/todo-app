@@ -25,8 +25,10 @@ class Todos {
     this.#todos.find((todo) => todo.id === todoId).deleteTask(taskId);
   }
 
-  markOrUnmarkTask({ todoId, taskId }) {
-    this.#todos.find((todo) => todo.id === todoId).markOrUnmarkTask(taskId);
+  markOrUnmarkTask({ todoId, taskId, isDone }) {
+    this.#todos
+      .find((todo) => todo.id === todoId)
+      .markOrUnmarkTask(taskId, isDone);
   }
 
   sortTodoBy(todoId, { alphabetic, status, date }) {

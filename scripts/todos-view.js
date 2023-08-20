@@ -88,7 +88,7 @@ class TodosView {
     }
 
     checkbox.onchange = () => {
-      this.#listeners.markTask({ taskId, todoId });
+      this.#listeners.markTask({ taskId, todoId, isDone: !isDone });
     };
 
     return descriptionElement;
@@ -107,19 +107,19 @@ class TodosView {
 
   #createTitleElement(title, todoId) {
     const titleElement = document.createElement("section");
-    const buttons = document.createElement("section");
+    const sortButtons = document.createElement("section");
     const heading = document.createElement("h2");
 
     heading.innerText = title;
     titleElement.classList.add("flex");
-    buttons.classList.add("flex");
+    sortButtons.classList.add("flex");
 
-    const statusButton = this.#createStatusSortButton(todoId);
+    const statusSortButton = this.#createStatusSortButton(todoId);
     const alphabeticSortButton = this.#createAlphabeticSortButton(todoId);
     const dateSortButton = this.#createDateSortButton(todoId);
 
-    buttons.append(statusButton, alphabeticSortButton, dateSortButton);
-    titleElement.append(heading, buttons);
+    sortButtons.append(statusSortButton, alphabeticSortButton, dateSortButton);
+    titleElement.append(heading, sortButtons);
 
     return titleElement;
   }

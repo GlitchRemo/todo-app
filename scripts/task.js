@@ -1,20 +1,20 @@
 class Task {
   #description;
   #id;
-  #done;
+  #isDone;
 
   constructor(description, id) {
     this.#description = description;
     this.#id = id;
-    this.#done = false;
+    this.#isDone = false;
   }
 
-  toggleDoneStatus() {
-    this.#done = !this.#done;
+  setStatus(isDone) {
+    this.#isDone = isDone;
   }
 
   isDone() {
-    return this.#done;
+    return this.#isDone;
   }
 
   get description() {
@@ -29,7 +29,7 @@ class Task {
     return {
       taskId: this.#id,
       description: this.description,
-      isDone: this.#done,
+      isDone: this.#isDone,
     };
   }
 }

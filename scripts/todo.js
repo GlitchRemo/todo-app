@@ -1,7 +1,7 @@
 class Todo {
   #tasks;
   #id;
-  #orderType;
+  #sortBy;
   #title;
   #taskId;
 
@@ -10,7 +10,7 @@ class Todo {
     this.#id = id;
     this.#taskId = 0;
     this.#tasks = [];
-    this.#orderType = { alphabetic: false, date: true, status: false };
+    this.#sortBy = { alphabetic: false, date: true, status: false };
   }
 
   #generateId() {
@@ -20,17 +20,17 @@ class Todo {
 
   sortTodoBy({ alphabetic, status, date }) {
     if (alphabetic) {
-      this.#orderType = { alphabetic: true, date: false, status: false };
+      this.#sortBy = { alphabetic: true, date: false, status: false };
       return;
     }
 
     if (status) {
-      this.#orderType = { alphabetic: false, date: false, status: true };
+      this.#sortBy = { alphabetic: false, date: false, status: true };
       return;
     }
 
     if (date) {
-      this.#orderType = { alphabetic: false, date: true, status: false };
+      this.#sortBy = { alphabetic: false, date: true, status: false };
       return;
     }
   }
@@ -41,14 +41,13 @@ class Todo {
     this.#tasks.push(task);
   }
 
-  markOrUnmarkTask(id) {
-    console.log("hq", id, this.#tasks);
-    this.#tasks.find((task) => task.id === id).toggleDoneStatus();
+  markOrUnmarkTask(id, isDone) {
+    this.#tasks.find((task) => task.id === id).setStatus(isDone);
   }
 
   #getSortedTasks() {
     return this.#tasks.toSorted((a, b) =>
-      a.description < b.description ? -1 : 1
+      a.description.toLowerCase() < b.description.toLowerCase() ? -1 : 1
     );
   }
 
@@ -59,8 +58,8 @@ class Todo {
   }
 
   getTasks() {
-    if (this.#orderType.alphabetic) return this.#getSortedTasks();
-    if (this.#orderType.status) return this.#getGroupedTasks();
+    if (this.#sortBy.alphabetic) return this.#getSortedTasks();
+    if (this.#sortBy.status) return this.#getGroupedTasks();
     return this.#tasks;
   }
 
@@ -79,6 +78,11 @@ class Todo {
 
   getDetails() {
     const tasks = this.getTasks().map((task) => task.getDetails());
-    return { todoId: this.#id, title: this.#title, tasks };
+    return {
+      todoId: this.#id,
+      title: this.#title,
+      sortBy: this.#sortBy,
+      tasks,
+    };
   }
 }
