@@ -1,5 +1,13 @@
-const { RequestHandler } = require("./handlers");
-const { Todos } = require("./todos");
+const {
+  redirectToHomepage,
+  sendTodos,
+  handlePostTodoRequest,
+  handlePostTaskRequest,
+  handlePatchTaskRequest,
+  handleDeleteTaskRequest,
+  serveStaticPage,
+  handleMethodNotAllowed,
+} = require("./handlers");
 
 class Router {
   #handlers;
@@ -11,13 +19,19 @@ class Router {
     this.#handlers.push({ method, route, handler });
   }
 
+  #isSameUrl(request, route) {
+    const routeRegex = new RegExp(route);
+    return routeRegex.test(request.url);
+  }
+
+  #isSameMethod(request, method) {
+    return method === request.method || method === "ANY";
+  }
+
   route(request, response) {
     const router = this.#handlers.find(({ method, route }) => {
-      const routeRegex = new RegExp(route);
-
       return (
-        routeRegex.test(request.url) &&
-        (method === request.method || method === "ANY")
+        this.#isSameUrl(request, route) && this.#isSameMethod(request, method)
       );
     });
 
@@ -27,35 +41,31 @@ class Router {
 
 const createRouter = () => {
   const router = new Router();
-  const todos = new Todos();
-  const requestHandler = new RequestHandler(todos);
 
-  router.addHandler("GET", "^/$", (req, res) =>
-    requestHandler.redirectToHomepage(req, res)
-  );
+  router.addHandler("GET", "^/$", (req, res) => redirectToHomepage(req, res));
 
-  router.addHandler("GET", "^/todos$", (req, res) =>
-    requestHandler.sendTodos(req, res)
-  );
+  router.addHandler("GET", "^/todos$", (req, res) => sendTodos(req, res));
 
   router.addHandler("POST", "^/todos$", (req, res) =>
-    requestHandler.handlePostTodoRequest(req, res)
+    handlePostTodoRequest(req, res)
   );
 
   router.addHandler("POST", "^/todos/tasks$", (req, res) =>
-    requestHandler.handlePostTaskRequest(req, res)
+    handlePostTaskRequest(req, res)
   );
 
   router.addHandler("PATCH", "^/todos/tasks/task$", (req, res) =>
-    requestHandler.handlePatchTaskRequest(req, res)
+    handlePatchTaskRequest(req, res)
   );
 
-  router.addHandler("GET", "^.*$", (req, res) =>
-    requestHandler.serveStaticPage(req, res)
+  router.addHandler("DELETE", "^/todos/tasks$", (req, res) =>
+    handleDeleteTaskRequest(req, res)
   );
+
+  router.addHandler("GET", "^.*$", (req, res) => serveStaticPage(req, res));
 
   router.addHandler("ANY", "^.*$", (req, res) =>
-    requestHandler.handleMethodNotAllowed(req, res)
+    handleMethodNotAllowed(req, res)
   );
 
   return router;

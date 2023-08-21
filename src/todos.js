@@ -23,7 +23,7 @@ class Todos {
     this.#todos.find((todo) => todo.id === todoId).addTask(description);
   }
 
-  removeTask({ todoId, taskId }) {
+  deleteTask({ todoId, taskId }) {
     this.#todos.find((todo) => todo.id === todoId).deleteTask(taskId);
   }
 
