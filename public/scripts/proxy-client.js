@@ -10,7 +10,8 @@ class ProxyClient {
   fetchTodos() {
     fetch("/todos")
       .then((res) => res.json())
-      .then((todoDetails) => this.#view.render(todoDetails));
+      .then((todosData) => initialize(todosData))
+      .then((todoLists) => this.#view.render(todoLists.todosData));
   }
 
   #addTodo(title) {
