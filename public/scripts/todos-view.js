@@ -179,7 +179,7 @@ class TodosView {
   render(todos) {
     this.#removeTodos();
 
-    todos.forEach((todo) => {
+    todos.reverse().forEach((todo) => {
       const todoElement = this.#createTodoSection(todo);
       this.#todosContainer.appendChild(todoElement);
     });

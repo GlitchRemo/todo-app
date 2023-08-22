@@ -129,7 +129,6 @@ const handleSortRequest = (request, response) => {
 
   request.on("end", () => {
     const { todoId, type } = JSON.parse(body);
-
     request.todosController.updateSort({ todoId, type }, () => {
       response.statusCode = 204;
       response.end();
