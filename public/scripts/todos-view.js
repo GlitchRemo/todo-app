@@ -1,14 +1,32 @@
 class TodosView {
   #todosContainer;
   #listeners;
+  #addButtonElement;
+  #inputboxElement;
 
-  constructor(todosContainer) {
+  constructor(addButtonElement, inputboxElement, todosContainer) {
+    this.#addButtonElement = addButtonElement;
+    this.#inputboxElement = inputboxElement;
     this.#todosContainer = todosContainer;
     this.#listeners = {};
   }
 
   on(eventName, listener) {
     this.#listeners[eventName] = listener;
+  }
+
+  #resetInputBox() {
+    this.#inputboxElement.value = "";
+  }
+
+  onNewTodo(listener) {
+    this.#addButtonElement.onclick = () => {
+      const title = this.#inputboxElement.value;
+      if (!title.trim()) return;
+
+      this.#resetInputBox();
+      listener(title);
+    };
   }
 
   #createAlphabeticSortButton(todoId) {
@@ -161,9 +179,9 @@ class TodosView {
     todoSection.classList.add("flex-column", "todo");
     tasksSection.classList.add("flex-column", "tasks");
 
-    tasks.reverse().forEach((task) => {
+    tasks.forEach((task) => {
       const todoElement = this.#createTaskElement(task, todoId);
-      tasksSection.appendChild(todoElement);
+      tasksSection.append(todoElement);
     });
 
     todoSection.appendChild(tasksSection);
@@ -179,9 +197,9 @@ class TodosView {
   render(todos) {
     this.#removeTodos();
 
-    todos.reverse().forEach((todo) => {
+    todos.forEach((todo) => {
       const todoElement = this.#createTodoSection(todo);
-      this.#todosContainer.appendChild(todoElement);
+      this.#todosContainer.prepend(todoElement);
     });
   }
 }

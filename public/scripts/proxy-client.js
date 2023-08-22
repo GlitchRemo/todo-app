@@ -72,7 +72,7 @@ class ProxyClient {
   start() {
     this.fetchTodos();
 
-    this.#inputController.onNewTodo((title) => this.#addTodo(title));
+    this.#view.onNewTodo((title) => this.#addTodo(title));
 
     this.#view.on("addTask", (task) => this.#addTask(task));
     this.#view.on("markTask", (ids) => this.#markOrUnmarkTask(ids));
