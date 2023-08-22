@@ -4,10 +4,10 @@ class TodoList {
   #todos;
   #sortBy;
 
-  constructor({ todoId, title, tasks, sortBy }) {
-    this.#id = todoId;
+  constructor({ listId, title, todos, sortBy }) {
+    this.#id = listId;
     this.#title = title;
-    this.#todos = tasks;
+    this.#todos = todos;
     this.#sortBy = sortBy || {};
   }
 
@@ -60,16 +60,14 @@ class TodoLists {
 
   get todosData() {
     return this.#todoLists.map((todoList) => ({
-      todoId: todoList.id,
-      tasks: todoList.todos,
+      listId: todoList.id,
+      todos: todoList.todos,
       title: todoList.title,
-      sortBy: todoList.sortBy,
     }));
   }
 }
 
 const initialize = (todosData) => {
-  console.log(todosData);
   const todoLists = todosData.map((todoList) => new TodoList(todoList));
   return new TodoLists(todoLists);
 };

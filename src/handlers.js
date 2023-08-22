@@ -52,7 +52,7 @@ const serveStaticPage = (request, response) => {
 
 const sendTodos = (request, response) => {
   response
-    .writeHead(201, { "Content-Type": "application/json" })
+    .writeHead(200, { "Content-Type": "application/json" })
     .end(JSON.stringify(request.todosController.getTodos()));
 };
 
@@ -80,8 +80,8 @@ const handlePostTaskRequest = (request, response) => {
   });
 
   request.on("end", () => {
-    const { todoId, description } = JSON.parse(body);
-    request.todosController.addTask({ todoId, description }, () => {
+    const { listId, description } = JSON.parse(body);
+    request.todosController.addTask({ listId, description }, () => {
       response.statusCode = 204;
       response.end();
     });
@@ -112,8 +112,8 @@ const handleDeleteTaskRequest = (request, response) => {
   });
 
   request.on("end", () => {
-    const { todoId, taskId } = JSON.parse(body);
-    request.todosController.deleteTask({ todoId, taskId }, () => {
+    const { listId, todoId } = JSON.parse(body);
+    request.todosController.deleteTask({ listId, todoId }, () => {
       response.statusCode = 204;
       response.end();
     });

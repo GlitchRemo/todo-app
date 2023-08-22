@@ -1,9 +1,9 @@
 const fs = require("node:fs");
 const http = require("node:http");
 const { createRouter } = require("./src/router");
-const { TodosController } = require("./src/todos-controller");
+const { TodosController, initialize } = require("./src/todos-controller");
 const { TodosStorage } = require("./src/todos-storage");
-const { Todos } = require("./src/todos");
+const { TodoLists } = require("./src/todo-lists");
 
 const logRequest = (request) => console.log(">", request.method, request.url);
 
@@ -24,10 +24,8 @@ const setupServer = (todosController) => {
 const main = () => {
   const storagePath = "./todos.json";
   const todosStorage = new TodosStorage(fs, storagePath);
-  const todos = new Todos();
-  const todosController = new TodosController(todos, todosStorage);
-
-  todosController.start();
+  const todoLists = initialize(todosStorage.readTodos());
+  const todosController = new TodosController(todoLists, todosStorage);
 
   setupServer(todosController);
 };

@@ -1,63 +1,35 @@
-const { Task } = require("./task");
-
 class Todo {
-  #tasks;
-  #todoId;
-  #taskId;
-  #sortBy;
-  #title;
+  #id;
+  #isDone;
+  #description;
 
-  constructor({ title, todoId, sortBy }) {
-    this.#title = title;
-    this.#todoId = todoId;
-    this.#taskId = 0;
-    this.#tasks = [];
-    this.#sortBy = sortBy || { alphabetic: false, date: true, status: false };
+  constructor(description, id, isDone) {
+    this.#id = id;
+    this.#isDone = isDone || false;
+    this.#description = description;
   }
 
-  #generateId() {
-    this.#taskId++;
-    return this.#taskId;
+  setStatus(isDone) {
+    this.#isDone = isDone;
   }
 
-  sortTodoBy(type) {
-    this.#sortBy = type;
+  get isDone() {
+    return this.#isDone;
   }
 
-  addTask(description, isDone) {
-    const taskId = this.#generateId();
-    const task = new Task(description, taskId, isDone);
-    this.#tasks.push(task);
-  }
-
-  markOrUnmarkTask(id, isDone) {
-    this.#tasks.find((task) => task.id === id).setStatus(isDone);
-  }
-
-  get title() {
-    return this.#title;
+  get description() {
+    return this.#description;
   }
 
   get id() {
-    return this.#todoId;
-  }
-
-  get sortBy() {
-    return this.#sortBy;
-  }
-
-  deleteTask(id) {
-    const indexOfTaskToDelete = this.#tasks.findIndex((task) => task.id === id);
-    this.#tasks.splice(indexOfTaskToDelete, 1);
+    return this.#id;
   }
 
   getDetails() {
-    const tasks = this.#tasks.map((task) => task.getDetails());
     return {
-      todoId: this.#todoId,
-      title: this.#title,
-      sortBy: this.#sortBy,
-      tasks,
+      todoId: this.#id,
+      description: this.description,
+      isDone: this.#isDone,
     };
   }
 }

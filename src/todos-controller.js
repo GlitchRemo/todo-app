@@ -1,55 +1,57 @@
+const { TodoList } = require("./todo-list");
+const { TodoLists } = require("./todo-lists");
+
 class TodosController {
-  #todos;
+  #todoLists;
   #todosStorage;
 
   constructor(todos, todosStorage) {
-    this.#todos = todos;
+    this.#todoLists = todos;
     this.#todosStorage = todosStorage;
   }
 
   addTodo(title, onSave) {
-    this.#todos.addTodo(title);
-    this.#todosStorage.saveTodos(this.#todos.getDetails(), onSave);
+    this.#todoLists.addTodo(title);
+    this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
   }
 
   addTask(task, onSave) {
-    this.#todos.addTask(task);
-    this.#todosStorage.saveTodos(this.#todos.getDetails(), onSave);
+    this.#todoLists.addTask(task);
+    this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
   }
 
   markOrUnmarkTask({ todoId, taskId, isDone }, onSave) {
-    this.#todos.markOrUnmarkTask({ todoId, taskId, isDone });
-    this.#todosStorage.saveTodos(this.#todos.getDetails(), onSave);
+    this.#todoLists.markOrUnmarkTask({ todoId, taskId, isDone });
+    this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
   }
 
-  deleteTask({ todoId, taskId }, onSave) {
-    this.#todos.deleteTask({ todoId, taskId });
-    this.#todosStorage.saveTodos(this.#todos.getDetails(), onSave);
+  deleteTask({ listId, todoId }, onSave) {
+    this.#todoLists.deleteTask(listId, todoId);
+    this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
   }
 
   updateSort({ todoId, type }, onSave) {
-    this.#todos.sortTodoBy(todoId, type);
-    this.#todosStorage.saveTodos(this.#todos.getDetails(), onSave);
+    this.#todoLists.sortTodoBy(todoId, type);
+    this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
   }
 
   getTodos() {
-    return this.#todos.getDetails();
-  }
-
-  #createTodo({ todoId, title, tasks, sortBy }) {
-    this.#todos.addTodo(title, sortBy);
-
-    tasks.forEach((task) => this.#todos.addTask({ todoId, ...task }));
-  }
-
-  #createTodos() {
-    const todos = this.#todosStorage.readTodos();
-    todos.forEach((todo) => this.#createTodo(todo));
-  }
-
-  start() {
-    this.#createTodos();
+    return this.#todoLists.getDetails();
   }
 }
 
-module.exports = { TodosController };
+const createList = ({ listId, title, todos, sortBy }) => {
+  const todoList = new TodoList(title, listId, sortBy);
+
+  todos.forEach(({ description, isDone }) =>
+    todoList.addTask(description, isDone)
+  );
+
+  return todoList;
+};
+
+const initialize = (todosData) => {
+  return new TodoLists(todosData.map(createList));
+};
+
+module.exports = { TodosController, initialize };

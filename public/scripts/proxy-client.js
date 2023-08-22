@@ -22,17 +22,17 @@ class ProxyClient {
     }).then(() => this.fetchTodos());
   }
 
-  #addTask({ todoId, description }) {
+  #addTask(listId, description) {
     fetch("/todos/tasks", {
       method: "POST",
-      body: JSON.stringify({ description, todoId }),
+      body: JSON.stringify({ description, listId }),
       headers: {
         "Content-type": "application/json",
       },
     }).then(() => this.fetchTodos());
   }
 
-  #markOrUnmarkTask({ todoId, taskId, isDone }) {
+  #markOrUnmarkTask(todoId, taskId, isDone) {
     fetch("/todos/tasks/task", {
       method: "PATCH",
       body: JSON.stringify({ todoId, taskId, isDone }),
@@ -44,10 +44,10 @@ class ProxyClient {
     });
   }
 
-  #removeTask({ todoId, taskId }) {
+  #removeTask(listId, todoId) {
     fetch("/todos/tasks", {
       method: "DELETE",
-      body: JSON.stringify({ todoId, taskId }),
+      body: JSON.stringify({ todoId, listId }),
       headers: {
         "Content-type": "application/json",
       },
@@ -71,9 +71,15 @@ class ProxyClient {
 
     this.#view.onNewTodo((title) => this.#addTodo(title));
 
-    this.#view.on("addTask", (task) => this.#addTask(task));
-    this.#view.on("markTask", (ids) => this.#markOrUnmarkTask(ids));
-    this.#view.on("removeTask", (ids) => this.#removeTask(ids));
-    this.#view.on("sort", (id, type) => this.#updateSort(id, type));
+    this.#view.on("addTask", (listId, description) =>
+      this.#addTask(listId, description)
+    );
+    this.#view.on("markTask", (listId, todoId, isDone) =>
+      this.#markOrUnmarkTask(listId, todoId, isDone)
+    );
+    this.#view.on("removeTask", (listId, todoId) =>
+      this.#removeTask(listId, todoId)
+    );
+    this.#view.on("sort", (listId, type) => this.#updateSort(listId, type));
   }
 }
