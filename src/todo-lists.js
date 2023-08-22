@@ -28,15 +28,15 @@ class TodoLists {
     this.#lists.find((todo) => todo.id === listId).deleteTask(todoId);
   }
 
-  markOrUnmarkTask({ todoId, taskId, isDone }) {
+  markOrUnmarkTask({ listId, todoId, isDone }) {
     this.#lists
-      .find((todo) => todo.id === todoId)
-      .markOrUnmarkTask(taskId, isDone);
+      .find((list) => list.id === listId)
+      .markOrUnmarkTask(todoId, isDone);
   }
 
-  sortTodoBy(todoId, type) {
-    const todo = this.#lists.find((todo) => todo.id === todoId);
-    todo.sortTodoBy(type);
+  sortTodoBy(listId, type) {
+    const list = this.#lists.find((list) => list.id === listId);
+    list.sortTodoBy(type);
   }
 
   getDetails() {

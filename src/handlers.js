@@ -56,7 +56,7 @@ const sendTodos = (request, response) => {
     .end(JSON.stringify(request.todosController.getTodos()));
 };
 
-const handlePostTodoRequest = (request, response) => {
+const addTodoList = (request, response) => {
   let body = "";
 
   request.on("data", (chunk) => {
@@ -72,7 +72,7 @@ const handlePostTodoRequest = (request, response) => {
   });
 };
 
-const handlePostTaskRequest = (request, response) => {
+const addTodo = (request, response) => {
   let body = "";
 
   request.on("data", (chunk) => {
@@ -88,7 +88,7 @@ const handlePostTaskRequest = (request, response) => {
   });
 };
 
-const handlePatchTaskRequest = (request, response) => {
+const toggleDoneStatus = (request, response) => {
   let body = "";
 
   request.on("data", (chunk) => {
@@ -96,15 +96,15 @@ const handlePatchTaskRequest = (request, response) => {
   });
 
   request.on("end", () => {
-    const { todoId, taskId, isDone } = JSON.parse(body);
-    request.todosController.markOrUnmarkTask({ todoId, taskId, isDone }, () => {
+    const { listId, todoId, isDone } = JSON.parse(body);
+    request.todosController.markOrUnmarkTask({ listId, todoId, isDone }, () => {
       response.statusCode = 204;
       response.end();
     });
   });
 };
 
-const handleDeleteTaskRequest = (request, response) => {
+const deleteTodo = (request, response) => {
   let body = "";
 
   request.on("data", (chunk) => {
@@ -120,7 +120,7 @@ const handleDeleteTaskRequest = (request, response) => {
   });
 };
 
-const handleSortRequest = (request, response) => {
+const sortTodoList = (request, response) => {
   let body = "";
 
   request.on("data", (chunk) => {
@@ -128,8 +128,8 @@ const handleSortRequest = (request, response) => {
   });
 
   request.on("end", () => {
-    const { todoId, type } = JSON.parse(body);
-    request.todosController.updateSort({ todoId, type }, () => {
+    const { listId, type } = JSON.parse(body);
+    request.todosController.updateSort({ listId, type }, () => {
       response.statusCode = 204;
       response.end();
     });
@@ -139,12 +139,12 @@ const handleSortRequest = (request, response) => {
 module.exports = {
   handleMethodNotAllowed,
   handlePageNotFound,
-  handleDeleteTaskRequest,
-  handlePatchTaskRequest,
-  handlePostTaskRequest,
-  handlePostTodoRequest,
+  deleteTodo,
+  toggleDoneStatus,
+  addTodo,
+  addTodoList,
   redirectToHomepage,
   sendTodos,
   serveStaticPage,
-  handleSortRequest,
+  sortTodoList,
 };

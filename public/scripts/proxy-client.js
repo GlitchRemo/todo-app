@@ -32,10 +32,10 @@ class ProxyClient {
     }).then(() => this.fetchTodos());
   }
 
-  #markOrUnmarkTask(todoId, taskId, isDone) {
+  #markOrUnmarkTask(listId, todoId, isDone) {
     fetch("/todos/tasks/task", {
       method: "PATCH",
-      body: JSON.stringify({ todoId, taskId, isDone }),
+      body: JSON.stringify({ listId, todoId, isDone }),
       headers: {
         "Content-type": "application/json",
       },
@@ -56,14 +56,14 @@ class ProxyClient {
     });
   }
 
-  #updateSort(todoId, type) {
+  #updateSort(listId, type) {
     fetch("/todos/todo", {
       method: "PATCH",
-      body: JSON.stringify({ todoId, type }),
+      body: JSON.stringify({ listId, type }),
       headers: {
         "Content-type": "application/json",
       },
-    }).then((res) => this.fetchTodos());
+    }).then(() => this.fetchTodos());
   }
 
   start() {

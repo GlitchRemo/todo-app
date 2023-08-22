@@ -20,8 +20,8 @@ class TodosController {
     this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
   }
 
-  markOrUnmarkTask({ todoId, taskId, isDone }, onSave) {
-    this.#todoLists.markOrUnmarkTask({ todoId, taskId, isDone });
+  markOrUnmarkTask({ listId, todoId, isDone }, onSave) {
+    this.#todoLists.markOrUnmarkTask({ listId, todoId, isDone });
     this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
   }
 
@@ -30,8 +30,8 @@ class TodosController {
     this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
   }
 
-  updateSort({ todoId, type }, onSave) {
-    this.#todoLists.sortTodoBy(todoId, type);
+  updateSort({ listId, type }, onSave) {
+    this.#todoLists.sortTodoBy(listId, type);
     this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
   }
 
