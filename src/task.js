@@ -3,10 +3,10 @@ class Task {
   #id;
   #isDone;
 
-  constructor(description, id) {
+  constructor(description, id, isDone) {
     this.#description = description;
     this.#id = id;
-    this.#isDone = false;
+    this.#isDone = isDone || false;
   }
 
   setStatus(isDone) {

@@ -161,7 +161,7 @@ class TodosView {
     todoSection.classList.add("flex-column", "todo");
     tasksSection.classList.add("flex-column", "tasks");
 
-    tasks.forEach((task) => {
+    tasks.reverse().forEach((task) => {
       const todoElement = this.#createTaskElement(task, todoId);
       tasksSection.appendChild(todoElement);
     });

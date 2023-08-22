@@ -3,4 +3,4 @@
 - change remove to bin icon
 - make todo_1 as todo id
 
-- send sort order in request body and set the order in handler accordingly
+- don't store ids in file

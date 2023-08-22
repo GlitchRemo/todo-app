@@ -12,8 +12,8 @@ class TodosController {
     this.#todosStorage.saveTodos(this.#todos.getDetails(), onSave);
   }
 
-  addTask({ todoId, description }, onSave) {
-    this.#todos.addTask({ todoId, description });
+  addTask(task, onSave) {
+    this.#todos.addTask(task);
     this.#todosStorage.saveTodos(this.#todos.getDetails(), onSave);
   }
 
@@ -39,9 +39,7 @@ class TodosController {
   #createTodo({ todoId, title, tasks }) {
     this.#todos.addTodo(title);
 
-    tasks.forEach(({ description }) =>
-      this.#todos.addTask({ todoId, description })
-    );
+    tasks.forEach((task) => this.#todos.addTask({ todoId, ...task }));
   }
 
   #createTodos() {

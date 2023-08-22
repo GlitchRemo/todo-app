@@ -19,8 +19,8 @@ class Todos {
     this.#todos.push(new Todo({ todoId, title }));
   }
 
-  addTask({ todoId, description }) {
-    this.#todos.find((todo) => todo.id === todoId).addTask(description);
+  addTask({ todoId, description, isDone }) {
+    this.#todos.find((todo) => todo.id === todoId).addTask(description, isDone);
   }
 
   deleteTask({ todoId, taskId }) {
@@ -36,10 +36,6 @@ class Todos {
   sortTodoBy(todoId, type) {
     const todo = this.#todos.find((todo) => todo.id === todoId);
     todo.sortTodoBy(type);
-  }
-
-  getTodos() {
-    return this.#todos;
   }
 
   getDetails() {

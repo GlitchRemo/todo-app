@@ -24,9 +24,9 @@ class Todo {
     this.#sortBy = type;
   }
 
-  addTask(description) {
+  addTask(description, isDone) {
     const taskId = this.#generateId();
-    const task = new Task(description, taskId);
+    const task = new Task(description, taskId, isDone);
     this.#tasks.push(task);
   }
 

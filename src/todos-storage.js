@@ -15,8 +15,8 @@ class TodosStorage {
     return JSON.parse(this.#fs.readFileSync(this.#storagePath, "utf-8"));
   }
 
-  saveTodos(todoDetails, onSave) {
-    this.#fs.writeFile(this.#storagePath, JSON.stringify(todoDetails), onSave);
+  saveTodos(todos, onSave) {
+    this.#fs.writeFile(this.#storagePath, JSON.stringify(todos), onSave);
   }
 }
 
