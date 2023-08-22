@@ -33,9 +33,9 @@ class Todos {
       .markOrUnmarkTask(taskId, isDone);
   }
 
-  sortTodoBy(todoId, { alphabetic, status, date }) {
+  sortTodoBy(todoId, type) {
     const todo = this.#todos.find((todo) => todo.id === todoId);
-    todo.sortTodoBy({ alphabetic, date, status });
+    todo.sortTodoBy(type);
   }
 
   getTodos() {

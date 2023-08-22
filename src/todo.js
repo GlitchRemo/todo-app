@@ -20,21 +20,8 @@ class Todo {
     return this.#taskId;
   }
 
-  sortTodoBy({ alphabetic, status, date }) {
-    if (alphabetic) {
-      this.#sortBy = { alphabetic: true, date: false, status: false };
-      return;
-    }
-
-    if (status) {
-      this.#sortBy = { alphabetic: false, date: false, status: true };
-      return;
-    }
-
-    if (date) {
-      this.#sortBy = { alphabetic: false, date: true, status: false };
-      return;
-    }
+  sortTodoBy(type) {
+    this.#sortBy = type;
   }
 
   addTask(description) {

@@ -18,7 +18,7 @@ class TodosView {
     alphabeticButton.value = "A-Z";
 
     alphabeticButton.onclick = () => {
-      this.#listeners.alphabeticSort(todoId);
+      this.#listeners.sort(todoId, { alphabetic: true });
     };
 
     return alphabeticButton;
@@ -31,7 +31,7 @@ class TodosView {
     statusButton.value = "Status";
 
     statusButton.onclick = () => {
-      this.#listeners.statusSort(todoId);
+      this.#listeners.sort(todoId, { status: true });
     };
 
     return statusButton;
@@ -44,7 +44,7 @@ class TodosView {
     dateButton.value = "Date";
 
     dateButton.onclick = () => {
-      this.#listeners.dateSort(todoId);
+      this.#listeners.sort(todoId, { date: true });
     };
 
     return dateButton;

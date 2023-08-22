@@ -120,6 +120,23 @@ const handleDeleteTaskRequest = (request, response) => {
   });
 };
 
+const handleSortRequest = (request, response) => {
+  let body = "";
+
+  request.on("data", (chunk) => {
+    body += chunk;
+  });
+
+  request.on("end", () => {
+    const { todoId, type } = JSON.parse(body);
+
+    request.todosController.updateSort({ todoId, type }, () => {
+      response.statusCode = 204;
+      response.end();
+    });
+  });
+};
+
 module.exports = {
   handleMethodNotAllowed,
   handlePageNotFound,
@@ -130,4 +147,5 @@ module.exports = {
   redirectToHomepage,
   sendTodos,
   serveStaticPage,
+  handleSortRequest,
 };

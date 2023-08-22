@@ -57,16 +57,16 @@ class ProxyClient {
     });
   }
 
-  #sortTodoAlphabetically(todoId) {
-    console.log("sort alphabetically");
-  }
-
-  #sortTodoByStatus(todoId) {
-    console.log("sort by status");
-  }
-
-  #sortTodoByDate(todoId) {
-    console.log("sort by date");
+  #updateSort(todoId, type) {
+    fetch("/todos/todo", {
+      method: "PATCH",
+      body: JSON.stringify({ todoId, type }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    }).then(() => {
+      this.fetchTodos();
+    });
   }
 
   start() {
@@ -77,8 +77,6 @@ class ProxyClient {
     this.#view.on("addTask", (task) => this.#addTask(task));
     this.#view.on("markTask", (ids) => this.#markOrUnmarkTask(ids));
     this.#view.on("removeTask", (ids) => this.#removeTask(ids));
-    this.#view.on("alphabeticSort", (id) => this.#sortTodoAlphabetically(id));
-    this.#view.on("dateSort", (id) => this.#sortTodoByDate(id));
-    this.#view.on("statusSort", (id) => this.#sortTodoByStatus(id));
+    this.#view.on("sort", (id, type) => this.#updateSort(id, type));
   }
 }

@@ -27,6 +27,11 @@ class TodosController {
     this.#todosStorage.saveTodos(this.#todos.getDetails(), onSave);
   }
 
+  updateSort({ todoId, type }, onSave) {
+    this.#todos.sortTodoBy(todoId, type);
+    this.#todosStorage.saveTodos(this.#todos.getDetails(), onSave);
+  }
+
   getTodos() {
     return this.#todos.getDetails();
   }

@@ -7,6 +7,7 @@ const {
   handleDeleteTaskRequest,
   serveStaticPage,
   handleMethodNotAllowed,
+  handleSortRequest,
 } = require("./handlers");
 
 class Router {
@@ -56,6 +57,10 @@ const createRouter = () => {
 
   router.addHandler("PATCH", "^/todos/tasks/task$", (req, res) =>
     handlePatchTaskRequest(req, res)
+  );
+
+  router.addHandler("PATCH", "^/todos/todo$", (req, res) =>
+    handleSortRequest(req, res)
   );
 
   router.addHandler("DELETE", "^/todos/tasks$", (req, res) =>
