@@ -1,10 +1,8 @@
 class ProxyClient {
   #view;
-  #inputController;
 
-  constructor(view, inputController) {
+  constructor(view) {
     this.#view = view;
-    this.#inputController = inputController;
   }
 
   fetchTodos() {
@@ -65,9 +63,7 @@ class ProxyClient {
       headers: {
         "Content-type": "application/json",
       },
-    }).then(() => {
-      this.fetchTodos();
-    });
+    }).then((res) => this.fetchTodos());
   }
 
   start() {

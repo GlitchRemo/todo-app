@@ -14,9 +14,9 @@ class Todos {
     return this.#todoId;
   }
 
-  addTodo(title) {
+  addTodo(title, sortBy) {
     const todoId = this.#generateId();
-    this.#todos.push(new Todo({ todoId, title }));
+    this.#todos.push(new Todo({ todoId, title, sortBy }));
   }
 
   addTask({ todoId, description, isDone }) {

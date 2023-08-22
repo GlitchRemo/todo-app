@@ -55,7 +55,7 @@ class TodoLists {
 
   setSortType(listId, type) {
     const todoList = this.#todoLists.find((list) => list.id === listId);
-    todoList.setSortByBy(type);
+    todoList.setSortBy(type);
   }
 
   get todosData() {
@@ -69,6 +69,7 @@ class TodoLists {
 }
 
 const initialize = (todosData) => {
+  console.log(todosData);
   const todoLists = todosData.map((todoList) => new TodoList(todoList));
   return new TodoLists(todoLists);
 };

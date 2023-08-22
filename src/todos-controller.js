@@ -36,8 +36,8 @@ class TodosController {
     return this.#todos.getDetails();
   }
 
-  #createTodo({ todoId, title, tasks }) {
-    this.#todos.addTodo(title);
+  #createTodo({ todoId, title, tasks, sortBy }) {
+    this.#todos.addTodo(title, sortBy);
 
     tasks.forEach((task) => this.#todos.addTask({ todoId, ...task }));
   }

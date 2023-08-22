@@ -7,12 +7,12 @@ class Todo {
   #sortBy;
   #title;
 
-  constructor({ title, todoId }) {
+  constructor({ title, todoId, sortBy }) {
     this.#title = title;
     this.#todoId = todoId;
     this.#taskId = 0;
     this.#tasks = [];
-    this.#sortBy = { alphabetic: false, date: true, status: false };
+    this.#sortBy = sortBy || { alphabetic: false, date: true, status: false };
   }
 
   #generateId() {
@@ -34,24 +34,6 @@ class Todo {
     this.#tasks.find((task) => task.id === id).setStatus(isDone);
   }
 
-  #getSortedTasks() {
-    return this.#tasks.toSorted((a, b) =>
-      a.description.toLowerCase() < b.description.toLowerCase() ? -1 : 1
-    );
-  }
-
-  #getGroupedTasks() {
-    return this.#tasks.toSorted((a, b) =>
-      a.isDone() === false && b.isDone() === true ? -1 : 1
-    );
-  }
-
-  getTasks() {
-    if (this.#sortBy.alphabetic) return this.#getSortedTasks();
-    if (this.#sortBy.status) return this.#getGroupedTasks();
-    return this.#tasks;
-  }
-
   get title() {
     return this.#title;
   }
@@ -60,16 +42,21 @@ class Todo {
     return this.#todoId;
   }
 
+  get sortBy() {
+    return this.#sortBy;
+  }
+
   deleteTask(id) {
     const indexOfTaskToDelete = this.#tasks.findIndex((task) => task.id === id);
     this.#tasks.splice(indexOfTaskToDelete, 1);
   }
 
   getDetails() {
-    const tasks = this.getTasks().map((task) => task.getDetails());
+    const tasks = this.#tasks.map((task) => task.getDetails());
     return {
       todoId: this.#todoId,
       title: this.#title,
+      sortBy: this.#sortBy,
       tasks,
     };
   }
