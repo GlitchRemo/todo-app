@@ -6,7 +6,11 @@ class TodoLists {
 
   constructor(todoLists) {
     this.#lists = todoLists || [];
-    this.#listCount = (this.#lists.at(-1) || {}).id || 0;
+    this.#listCount = this.#getLastListId() || 0;
+  }
+
+  #getLastListId() {
+    return this.#lists.at(-1)?.id.split("_").pop();
   }
 
   #generateId() {

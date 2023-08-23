@@ -23,7 +23,7 @@ class ProxyClient {
   }
 
   #addTodo(listId, description) {
-    const url = `/todoLists/${listId}/todos`;
+    const url = `/todo-lists/${listId}/todos`;
 
     fetch(url, {
       method: "POST",
@@ -35,7 +35,7 @@ class ProxyClient {
   }
 
   #toggleDoneStatus(listId, todoId, isDone) {
-    const url = `/todoLists/${listId}/todos/${todoId}`;
+    const url = `/todo-lists/${listId}/todos/${todoId}`;
 
     fetch(url, {
       method: "PATCH",
@@ -49,7 +49,7 @@ class ProxyClient {
   }
 
   #removeTodo(listId, todoId) {
-    const url = `/todoLists/${listId}/todos/${todoId}`;
+    const url = `/todo-lists/${listId}/todos/${todoId}`;
 
     fetch(url, {
       method: "DELETE",
@@ -62,7 +62,7 @@ class ProxyClient {
   }
 
   #updateSort(listId, type) {
-    const url = `/todoLists/${listId}`;
+    const url = `/todo-lists/${listId}`;
 
     fetch(url, {
       method: "PATCH",

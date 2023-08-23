@@ -83,17 +83,18 @@ class View {
 
   #createTodoDescription({ todoId, description, isDone }, listId) {
     const descriptionElement = document.createElement("section");
+    descriptionElement.classList.add("checkbox");
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
 
-    const descriptionTextElement = document.createElement("label");
-    descriptionTextElement.innerText = description;
-    descriptionElement.append(checkbox, descriptionTextElement);
+    const textElement = document.createElement("label");
+    textElement.innerText = description;
+    descriptionElement.append(checkbox, textElement);
 
     if (isDone) {
       checkbox.checked = true;
-      descriptionTextElement.classList.add("strike");
+      textElement.classList.add("strike");
     }
 
     checkbox.onchange = () => {
