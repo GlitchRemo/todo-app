@@ -19,7 +19,7 @@ class View {
     this.#inputboxElement.value = "";
   }
 
-  onNewTodo(listener) {
+  onNewList(listener) {
     this.#addButtonElement.onclick = () => {
       const title = this.#inputboxElement.value;
       if (!title.trim()) return;
@@ -68,15 +68,6 @@ class View {
     return dateButton;
   }
 
-  #createAddTaskButton() {
-    const addTaskButton = document.createElement("input");
-
-    addTaskButton.type = "button";
-    addTaskButton.value = "Add Task";
-
-    return addTaskButton;
-  }
-
   #createRemoveButton({ todoId }, listId) {
     const deleteButton = document.createElement("input");
 
@@ -84,13 +75,13 @@ class View {
     deleteButton.value = "remove";
 
     deleteButton.onclick = () => {
-      this.#listeners.removeTask(listId, todoId);
+      this.#listeners.removeTodo(listId, todoId);
     };
 
     return deleteButton;
   }
 
-  #createTaskDescription({ todoId, description, isDone }, listId) {
+  #createTodoDescription({ todoId, description, isDone }, listId) {
     const descriptionElement = document.createElement("section");
 
     const checkbox = document.createElement("input");
@@ -106,21 +97,57 @@ class View {
     }
 
     checkbox.onchange = () => {
-      this.#listeners.markTask(listId, todoId, !isDone);
+      this.#listeners.toggleDoneStatus(listId, todoId, !isDone);
     };
 
     return descriptionElement;
   }
 
-  #createTaskElement(todo, listId) {
-    const taskElement = document.createElement("section");
+  #createTodoElement(todo, listId) {
+    const todoElement = document.createElement("section");
 
-    const descriptionElement = this.#createTaskDescription(todo, listId);
+    const descriptionElement = this.#createTodoDescription(todo, listId);
     const removeButton = this.#createRemoveButton(todo, listId);
-    taskElement.append(descriptionElement, removeButton);
-    taskElement.classList.add("task");
 
-    return taskElement;
+    todoElement.append(descriptionElement, removeButton);
+    todoElement.classList.add("todo");
+
+    return todoElement;
+  }
+
+  #createAddTodoButton() {
+    const addTodoButton = document.createElement("input");
+
+    addTodoButton.type = "button";
+    addTodoButton.value = "Add Todo";
+
+    return addTodoButton;
+  }
+
+  #createInputBox() {
+    const inputBox = document.createElement("input");
+    inputBox.classList.add("input-box");
+    inputBox.type = "text";
+    inputBox.placeholder = "Enter a todo...";
+    return inputBox;
+  }
+
+  #createInputSection(listId) {
+    const inputSection = document.createElement("section");
+    inputSection.classList.add("flex");
+
+    const inputBox = this.#createInputBox();
+    const addTodoButton = this.#createAddTodoButton();
+    inputSection.append(inputBox, addTodoButton);
+
+    addTodoButton.onclick = () => {
+      const description = inputBox.value;
+      if (!description.trim()) return;
+
+      this.#listeners.addTodo(listId, description);
+    };
+
+    return inputSection;
   }
 
   #createTitleElement(title, todoId) {
@@ -142,64 +169,38 @@ class View {
     return titleElement;
   }
 
-  #createInputBox() {
-    const inputBox = document.createElement("input");
-    inputBox.classList.add("input-box");
-    inputBox.type = "text";
-    inputBox.placeholder = "Enter a task...";
-    return inputBox;
-  }
-
-  #createInputSection(listId) {
-    const inputSection = document.createElement("section");
-    inputSection.classList.add("flex");
-
-    const inputBox = this.#createInputBox();
-    const addTaskButton = this.#createAddTaskButton();
-    inputSection.append(inputBox, addTaskButton);
-
-    addTaskButton.onclick = () => {
-      const description = inputBox.value;
-      if (!description.trim()) return;
-
-      this.#listeners.addTask(listId, description);
-    };
-
-    return inputSection;
-  }
-
-  #createTodoSection({ title, listId, todos }) {
-    const todoSection = document.createElement("article");
-    const tasksSection = document.createElement("section");
+  #createListSection({ title, listId, todos }) {
+    const listSection = document.createElement("article");
 
     const titleElement = this.#createTitleElement(title, listId);
     const inputSection = this.#createInputSection(listId);
+    listSection.append(titleElement, inputSection);
+    listSection.classList.add("flex-column", "list");
 
-    todoSection.append(titleElement, inputSection);
-    todoSection.classList.add("flex-column", "todo");
-    tasksSection.classList.add("flex-column", "tasks");
+    const todosSection = document.createElement("section");
+    todosSection.classList.add("flex-column", "todos");
 
     todos.forEach((todo) => {
-      const todoElement = this.#createTaskElement(todo, listId);
-      tasksSection.append(todoElement);
+      const todoElement = this.#createTodoElement(todo, listId);
+      todosSection.append(todoElement);
     });
 
-    todoSection.appendChild(tasksSection);
-    return todoSection;
+    listSection.appendChild(todosSection);
+    return listSection;
   }
 
-  #removeTodos() {
+  #removeLists() {
     [...this.#todosContainer.children].forEach((child) =>
       this.#todosContainer.removeChild(child)
     );
   }
 
   render(todosData) {
-    this.#removeTodos();
+    this.#removeLists();
 
     todosData.forEach((todoList) => {
-      const todoElement = this.#createTodoSection(todoList);
-      this.#todosContainer.prepend(todoElement);
+      const listElement = this.#createListSection(todoList);
+      this.#todosContainer.prepend(listElement);
     });
   }
 }

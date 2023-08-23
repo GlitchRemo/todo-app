@@ -12,7 +12,7 @@ class ProxyClient {
       .then((todoLists) => this.#view.render(todoLists.todosData));
   }
 
-  #addTodo(title) {
+  #addList(title) {
     fetch("/todos", {
       method: "post",
       body: JSON.stringify({ title }),
@@ -22,7 +22,7 @@ class ProxyClient {
     }).then(() => this.#fetchTodosAndRender());
   }
 
-  #addTask(listId, description) {
+  #addTodo(listId, description) {
     const url = `/todoLists/${listId}/todos`;
 
     fetch(url, {
@@ -34,7 +34,7 @@ class ProxyClient {
     }).then(() => this.#fetchTodosAndRender());
   }
 
-  #markOrUnmarkTask(listId, todoId, isDone) {
+  #toggleDoneStatus(listId, todoId, isDone) {
     const url = `/todoLists/${listId}/todos/${todoId}`;
 
     fetch(url, {
@@ -48,7 +48,7 @@ class ProxyClient {
     });
   }
 
-  #removeTask(listId, todoId) {
+  #removeTodo(listId, todoId) {
     const url = `/todoLists/${listId}/todos/${todoId}`;
 
     fetch(url, {
@@ -76,17 +76,20 @@ class ProxyClient {
   start() {
     this.#fetchTodosAndRender();
 
-    this.#view.onNewTodo((title) => this.#addTodo(title));
+    this.#view.onNewList((title) => this.#addList(title));
 
-    this.#view.on("addTask", (listId, description) =>
-      this.#addTask(listId, description)
+    this.#view.on("addTodo", (listId, description) =>
+      this.#addTodo(listId, description)
     );
-    this.#view.on("markTask", (listId, todoId, isDone) =>
-      this.#markOrUnmarkTask(listId, todoId, isDone)
+
+    this.#view.on("toggleDoneStatus", (listId, todoId, isDone) =>
+      this.#toggleDoneStatus(listId, todoId, isDone)
     );
-    this.#view.on("removeTask", (listId, todoId) =>
-      this.#removeTask(listId, todoId)
+
+    this.#view.on("removeTodo", (listId, todoId) =>
+      this.#removeTodo(listId, todoId)
     );
+
     this.#view.on("sort", (listId, type) => this.#updateSort(listId, type));
   }
 }
