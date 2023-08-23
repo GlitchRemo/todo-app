@@ -69,10 +69,10 @@ class View {
   }
 
   #createRemoveButton({ todoId }, listId) {
-    const deleteButton = document.createElement("input");
+    const deleteButton = document.createElement("img");
 
-    deleteButton.type = "button";
-    deleteButton.value = "remove";
+    deleteButton.setAttribute("src", "../bin-icon.png");
+    deleteButton.classList.add("delete-button");
 
     deleteButton.onclick = () => {
       this.#listeners.removeTodo(listId, todoId);
@@ -120,7 +120,8 @@ class View {
     const addTodoButton = document.createElement("input");
 
     addTodoButton.type = "button";
-    addTodoButton.value = "Add Todo";
+    addTodoButton.value = "+";
+    addTodoButton.classList.add("add-button");
 
     return addTodoButton;
   }
@@ -135,7 +136,7 @@ class View {
 
   #createInputSection(listId) {
     const inputSection = document.createElement("section");
-    inputSection.classList.add("flex");
+    inputSection.classList.add("input-box-container");
 
     const inputBox = this.#createInputBox();
     const addTodoButton = this.#createAddTodoButton();

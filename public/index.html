@@ -1,7 +1,12 @@
 <html>
   <head>
     <title>Todo</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <link rel="stylesheet" href="./css/style.css" />
+
     <script src="./scripts/model.js"></script>
     <script src="./scripts/proxy-client.js"></script>
     <script src="./scripts/view.js"></script>
@@ -12,11 +17,11 @@
       <header>
         <h1 class="title">TODO</h1>
       </header>
-      <section id="add-title" class="flex">
+      <div class="input-box-container">
         <input type="text" class="input-box" placeholder="Enter a title..." />
-        <input type="button" value="Add Title" id="add-button" />
-      </section>
-      <section id="todos-container"></section>
+        <input type="button" class="add-button" value="+"/>
+      </div>
+      <div id="todos-container"></section>
     </main>
   </body>
 </html>
