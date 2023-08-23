@@ -1,23 +1,6 @@
-const handleMethodNotAllowed = (_, response) => {
-  response.statusCode = 405;
-  response.end("Method not allowed");
-};
-
-const handlePageNotFound = (request, response) => {
-  response.statusCode = 404;
-  response.end(`${request.url} Not Found`);
-};
-
-const redirectToHomepage = (_, response) => {
-  response.writeHead(303, { location: "/index.html" }).end();
-};
-
 const sendTodos = (request, response) => {
   const { todosController } = request.app;
-
-  response
-    .writeHead(200, { "Content-Type": "application/json" })
-    .end(JSON.stringify(todosController.getTodosDetails()));
+  response.json(todosController.getTodosDetails());
 };
 
 const addTodoList = (request, response) => {
@@ -74,13 +57,10 @@ const sortTodoList = (request, response) => {
 };
 
 module.exports = {
-  handleMethodNotAllowed,
-  handlePageNotFound,
   deleteTodo,
   toggleDoneStatus,
   addTodo,
   addTodoList,
-  redirectToHomepage,
   sendTodos,
   sortTodoList,
 };

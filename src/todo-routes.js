@@ -6,7 +6,7 @@ const createTodoRoutes = (app) => {
   app.post("/todos", handlers.addTodoList);
   app.post("/todoLists/:listId/todos", handlers.addTodo);
 
-  app.patch(`/todoLists/:listId/todos/:todoId`, handlers.toggleDoneStatus);
+  app.patch("/todoLists/:listId/todos/:todoId", handlers.toggleDoneStatus);
   app.patch("/todoLists/:listId", handlers.sortTodoList);
 
   app.delete("/todoLists/:listId/todos/:todoId", handlers.deleteTodo);

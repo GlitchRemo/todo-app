@@ -5,7 +5,7 @@ class ProxyClient {
     this.#view = view;
   }
 
-  fetchTodos() {
+  #fetchTodosAndRender() {
     fetch("/todos")
       .then((res) => res.json())
       .then((todosData) => initialize(todosData))
@@ -19,7 +19,7 @@ class ProxyClient {
       headers: {
         "Content-type": "application/json",
       },
-    }).then(() => this.fetchTodos());
+    }).then(() => this.#fetchTodosAndRender());
   }
 
   #addTask(listId, description) {
@@ -31,7 +31,7 @@ class ProxyClient {
       headers: {
         "Content-type": "application/json",
       },
-    }).then(() => this.fetchTodos());
+    }).then(() => this.#fetchTodosAndRender());
   }
 
   #markOrUnmarkTask(listId, todoId, isDone) {
@@ -44,7 +44,7 @@ class ProxyClient {
         "Content-type": "application/json",
       },
     }).then(() => {
-      this.fetchTodos();
+      this.#fetchTodosAndRender();
     });
   }
 
@@ -57,7 +57,7 @@ class ProxyClient {
         "Content-type": "application/json",
       },
     }).then(() => {
-      this.fetchTodos();
+      this.#fetchTodosAndRender();
     });
   }
 
@@ -70,11 +70,11 @@ class ProxyClient {
       headers: {
         "Content-type": "application/json",
       },
-    }).then(() => this.fetchTodos());
+    }).then(() => this.#fetchTodosAndRender());
   }
 
   start() {
-    this.fetchTodos();
+    this.#fetchTodosAndRender();
 
     this.#view.onNewTodo((title) => this.#addTodo(title));
 
