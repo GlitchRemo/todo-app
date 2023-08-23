@@ -57,82 +57,42 @@ const sendTodos = (request, response) => {
 };
 
 const addTodoList = (request, response) => {
-  let body = "";
-
-  request.on("data", (chunk) => {
-    body += chunk;
-  });
-
-  request.on("end", () => {
-    const { title } = JSON.parse(body);
-    request.todosController.addTodo(title, () => {
-      response.statusCode = 204;
-      response.end();
-    });
+  const { title } = request.body;
+  request.todosController.addTodo(title, () => {
+    response.statusCode = 201;
+    response.end();
   });
 };
 
 const addTodo = (request, response) => {
-  let body = "";
-
-  request.on("data", (chunk) => {
-    body += chunk;
-  });
-
-  request.on("end", () => {
-    const { listId, description } = JSON.parse(body);
-    request.todosController.addTask({ listId, description }, () => {
-      response.statusCode = 204;
-      response.end();
-    });
+  const { listId, description } = request.body;
+  request.todosController.addTask({ listId, description }, () => {
+    response.statusCode = 201;
+    response.end();
   });
 };
 
 const toggleDoneStatus = (request, response) => {
-  let body = "";
-
-  request.on("data", (chunk) => {
-    body += chunk;
-  });
-
-  request.on("end", () => {
-    const { listId, todoId, isDone } = JSON.parse(body);
-    request.todosController.markOrUnmarkTask({ listId, todoId, isDone }, () => {
-      response.statusCode = 204;
-      response.end();
-    });
+  const { listId, todoId, isDone } = request.body;
+  request.todosController.markOrUnmarkTask({ listId, todoId, isDone }, () => {
+    response.statusCode = 204;
+    response.end();
   });
 };
 
 const deleteTodo = (request, response) => {
-  let body = "";
-
-  request.on("data", (chunk) => {
-    body += chunk;
-  });
-
-  request.on("end", () => {
-    const { listId, todoId } = JSON.parse(body);
-    request.todosController.deleteTask({ listId, todoId }, () => {
-      response.statusCode = 204;
-      response.end();
-    });
+  const { listId, todoId } = request.body;
+  request.todosController.deleteTask({ listId, todoId }, () => {
+    response.statusCode = 204;
+    response.end();
   });
 };
 
 const sortTodoList = (request, response) => {
-  let body = "";
-
-  request.on("data", (chunk) => {
-    body += chunk;
-  });
-
-  request.on("end", () => {
-    const { listId, type } = JSON.parse(body);
-    request.todosController.updateSort({ listId, type }, () => {
-      response.statusCode = 204;
-      response.end();
-    });
+  const { listId, type } = request.body;
+  request.todosController.updateSort({ listId, type }, () => {
+    response.statusCode = 204;
+    response.end();
   });
 };
 

@@ -5,8 +5,9 @@ class TodoLists {
   #listCount;
 
   constructor(todoLists) {
-    this.#listCount = 0;
     this.#lists = todoLists || [];
+    console.log(todoLists);
+    this.#listCount = (this.#lists.at(-1) || {}).id || 0;
   }
 
   #generateId() {

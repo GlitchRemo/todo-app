@@ -1,3 +1,6 @@
+const fs = require("node:fs");
+const { TodosController, initialize } = require("./todos-controller");
+const { TodosStorage } = require("./todos-storage");
 const handlers = require("./handlers");
 
 const logRequest = (request, response, next) => {
@@ -5,21 +8,42 @@ const logRequest = (request, response, next) => {
   next();
 };
 
-const createRouter = (app, todosController) => {
-  app.use((req, res, next) => {
-    req.todosController = todosController;
-    next();
+const attachController = (request, response, next) => {
+  const storagePath = "./todos.json";
+  const todosStorage = new TodosStorage(fs, storagePath);
+  const todoLists = initialize(todosStorage.readTodos());
+  const todosController = new TodosController(todoLists, todosStorage);
+
+  request.todosController = todosController;
+  next();
+};
+
+const readBody = (request, response, next) => {
+  let body = "";
+
+  request.on("data", (chunk) => {
+    body += chunk;
   });
 
+  request.on("end", () => {
+    console.log("body", body);
+    request.body = JSON.parse(body);
+    next();
+  });
+};
+
+const createRouter = (app) => {
   app.use(logRequest);
+  app.use(attachController);
+
   app.get("/", handlers.redirectToHomepage);
   app.get("/todos", handlers.sendTodos);
-  app.post("/todos", handlers.addTodoList);
-  app.post("/todos/tasks", handlers.addTodo);
-  app.patch("/todos/tasks/task", handlers.toggleDoneStatus);
-  app.patch("/todos/todo", handlers.sortTodoList);
-  app.delete("/todos/tasks", handlers.deleteTodo);
-  app.use(handlers.serveStaticPage);
+  app.post("/todos", readBody, handlers.addTodoList);
+  app.post("/todos/tasks", readBody, handlers.addTodo);
+  app.patch("/todos/tasks/task", readBody, handlers.toggleDoneStatus);
+  app.patch("/todos/todo", readBody, handlers.sortTodoList);
+  app.delete("/todos/tasks", readBody, handlers.deleteTodo);
+  app.get(/.*/, handlers.serveStaticPage);
 };
 
 module.exports = { createRouter };
