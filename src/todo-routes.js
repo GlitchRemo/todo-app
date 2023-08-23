@@ -2,11 +2,14 @@ const handlers = require("./handlers");
 
 const createTodoRoutes = (app) => {
   app.get("/todos", handlers.sendTodos);
+
   app.post("/todos", handlers.addTodoList);
-  app.post("/todos/tasks", handlers.addTodo);
-  app.patch("/todos/tasks/task", handlers.toggleDoneStatus);
-  app.patch("/todos/todo", handlers.sortTodoList);
-  app.delete("/todos/tasks", handlers.deleteTodo);
+  app.post("/todoLists/:listId/todos", handlers.addTodo);
+
+  app.patch(`/todoLists/:listId/todos/:todoId`, handlers.toggleDoneStatus);
+  app.patch("/todoLists/:listId", handlers.sortTodoList);
+
+  app.delete("/todoLists/:listId/todos/:todoId", handlers.deleteTodo);
 };
 
 module.exports = { createTodoRoutes };

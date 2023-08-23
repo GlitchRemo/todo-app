@@ -10,8 +10,11 @@ const createApp = () => {
   const app = express();
 
   app.use(express.json());
+  app.use(express.urlencoded());
   app.use(logRequest);
+
   createTodoRoutes(app);
+
   app.use(express.static("public"));
 
   return app;

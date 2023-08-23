@@ -23,7 +23,9 @@ class ProxyClient {
   }
 
   #addTask(listId, description) {
-    fetch("/todos/tasks", {
+    const url = `/todoLists/:${listId}/todos`;
+
+    fetch(url, {
       method: "POST",
       body: JSON.stringify({ description, listId }),
       headers: {
@@ -33,7 +35,9 @@ class ProxyClient {
   }
 
   #markOrUnmarkTask(listId, todoId, isDone) {
-    fetch("/todos/tasks/task", {
+    const url = `/todoLists/:${listId}/todos/${todoId}`;
+
+    fetch(url, {
       method: "PATCH",
       body: JSON.stringify({ listId, todoId, isDone }),
       headers: {
@@ -45,7 +49,9 @@ class ProxyClient {
   }
 
   #removeTask(listId, todoId) {
-    fetch("/todos/tasks", {
+    const url = `/todoLists/:${listId}/todos/${todoId}`;
+
+    fetch(url, {
       method: "DELETE",
       body: JSON.stringify({ todoId, listId }),
       headers: {
@@ -57,7 +63,9 @@ class ProxyClient {
   }
 
   #updateSort(listId, type) {
-    fetch("/todos/todo", {
+    const url = `/todoLists/:${listId}`;
+
+    fetch(url, {
       method: "PATCH",
       body: JSON.stringify({ listId, type }),
       headers: {
