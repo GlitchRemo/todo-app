@@ -23,11 +23,11 @@ class ProxyClient {
   }
 
   #addTask(listId, description) {
-    const url = `/todoLists/:${listId}/todos`;
+    const url = `/todoLists/${listId}/todos`;
 
     fetch(url, {
       method: "POST",
-      body: JSON.stringify({ description, listId }),
+      body: JSON.stringify({ description }),
       headers: {
         "Content-type": "application/json",
       },
@@ -35,11 +35,11 @@ class ProxyClient {
   }
 
   #markOrUnmarkTask(listId, todoId, isDone) {
-    const url = `/todoLists/:${listId}/todos/${todoId}`;
+    const url = `/todoLists/${listId}/todos/${todoId}`;
 
     fetch(url, {
       method: "PATCH",
-      body: JSON.stringify({ listId, todoId, isDone }),
+      body: JSON.stringify({ isDone }),
       headers: {
         "Content-type": "application/json",
       },
@@ -49,11 +49,10 @@ class ProxyClient {
   }
 
   #removeTask(listId, todoId) {
-    const url = `/todoLists/:${listId}/todos/${todoId}`;
+    const url = `/todoLists/${listId}/todos/${todoId}`;
 
     fetch(url, {
       method: "DELETE",
-      body: JSON.stringify({ todoId, listId }),
       headers: {
         "Content-type": "application/json",
       },
@@ -63,11 +62,11 @@ class ProxyClient {
   }
 
   #updateSort(listId, type) {
-    const url = `/todoLists/:${listId}`;
+    const url = `/todoLists/${listId}`;
 
     fetch(url, {
       method: "PATCH",
-      body: JSON.stringify({ listId, type }),
+      body: JSON.stringify({ type }),
       headers: {
         "Content-type": "application/json",
       },

@@ -11,7 +11,7 @@ class TodoLists {
 
   #generateId() {
     this.#listCount++;
-    return this.#listCount;
+    return `list_${this.#listCount}`;
   }
 
   add(title) {

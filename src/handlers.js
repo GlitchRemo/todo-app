@@ -32,7 +32,8 @@ const addTodoList = (request, response) => {
 
 const addTodo = (request, response) => {
   const { todosController } = request.app;
-  const { listId, description } = request.body;
+  const { description } = request.body;
+  const { listId } = request.params;
 
   todosController.addTodo({ listId, description }, () => {
     response.statusCode = 201;
@@ -42,7 +43,8 @@ const addTodo = (request, response) => {
 
 const toggleDoneStatus = (request, response) => {
   const { todosController } = request.app;
-  const { listId, todoId, isDone } = request.body;
+  const { isDone } = request.body;
+  const { listId, todoId } = request.params;
 
   todosController.toggleDoneStatus({ listId, todoId, isDone }, () => {
     response.statusCode = 204;
@@ -52,7 +54,7 @@ const toggleDoneStatus = (request, response) => {
 
 const deleteTodo = (request, response) => {
   const { todosController } = request.app;
-  const { listId, todoId } = request.body;
+  const { listId, todoId } = request.params;
 
   todosController.deleteTodo({ listId, todoId }, () => {
     response.statusCode = 204;
@@ -62,7 +64,8 @@ const deleteTodo = (request, response) => {
 
 const sortTodoList = (request, response) => {
   const { todosController } = request.app;
-  const { listId, type } = request.body;
+  const { type } = request.body;
+  const { listId } = request.params;
 
   todosController.updateSort({ listId, type }, () => {
     response.statusCode = 204;

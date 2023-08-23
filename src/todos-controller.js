@@ -1,6 +1,3 @@
-const { TodoList } = require("./todo-list");
-const { TodoLists } = require("./todo-lists");
-
 class TodosController {
   #todoLists;
   #todosStorage;

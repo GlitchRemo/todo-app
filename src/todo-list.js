@@ -17,7 +17,7 @@ class TodoList {
 
   #generateId() {
     this.#todoCount++;
-    return this.#todoCount;
+    return `todo_${this.#todoCount}`;
   }
 
   sortListBy(type) {
