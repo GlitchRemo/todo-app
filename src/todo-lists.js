@@ -6,7 +6,6 @@ class TodoLists {
 
   constructor(todoLists) {
     this.#lists = todoLists || [];
-    console.log(todoLists);
     this.#listCount = (this.#lists.at(-1) || {}).id || 0;
   }
 
@@ -15,33 +14,33 @@ class TodoLists {
     return this.#listCount;
   }
 
-  addTodo(title) {
+  add(title) {
     const listId = this.#generateId();
     const newList = new TodoList(title, listId);
     this.#lists.push(newList);
   }
 
-  addTask({ listId, description, isDone }) {
-    this.#lists.find((todo) => todo.id === listId).addTask(description, isDone);
+  addTodo({ listId, description, isDone }) {
+    this.#lists.find((todo) => todo.id === listId).add(description, isDone);
   }
 
-  deleteTask(listId, todoId) {
-    this.#lists.find((todo) => todo.id === listId).deleteTask(todoId);
+  deleteTodo(listId, todoId) {
+    this.#lists.find((todo) => todo.id === listId).delete(todoId);
   }
 
-  markOrUnmarkTask({ listId, todoId, isDone }) {
+  toggleDoneStatus({ listId, todoId, isDone }) {
     this.#lists
       .find((list) => list.id === listId)
-      .markOrUnmarkTask(todoId, isDone);
+      .toggleDoneStatus(todoId, isDone);
   }
 
-  sortTodoBy(listId, type) {
+  sortListBy(listId, type) {
     const list = this.#lists.find((list) => list.id === listId);
-    list.sortTodoBy(type);
+    list.sortListBy(type);
   }
 
   getDetails() {
-    return this.#lists.map((todo) => todo.getDetails());
+    return this.#lists.map((list) => list.getDetails());
   }
 }
 

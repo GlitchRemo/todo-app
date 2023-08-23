@@ -53,12 +53,13 @@ const serveStaticPage = (request, response) => {
 const sendTodos = (request, response) => {
   response
     .writeHead(200, { "Content-Type": "application/json" })
-    .end(JSON.stringify(request.todosController.getTodos()));
+    .end(JSON.stringify(request.todosController.getTodosDetails()));
 };
 
 const addTodoList = (request, response) => {
   const { title } = request.body;
-  request.todosController.addTodo(title, () => {
+
+  request.todosController.addTodoList(title, () => {
     response.statusCode = 201;
     response.end();
   });
@@ -66,7 +67,8 @@ const addTodoList = (request, response) => {
 
 const addTodo = (request, response) => {
   const { listId, description } = request.body;
-  request.todosController.addTask({ listId, description }, () => {
+
+  request.todosController.addTodo({ listId, description }, () => {
     response.statusCode = 201;
     response.end();
   });
@@ -74,7 +76,8 @@ const addTodo = (request, response) => {
 
 const toggleDoneStatus = (request, response) => {
   const { listId, todoId, isDone } = request.body;
-  request.todosController.markOrUnmarkTask({ listId, todoId, isDone }, () => {
+
+  request.todosController.toggleDoneStatus({ listId, todoId, isDone }, () => {
     response.statusCode = 204;
     response.end();
   });
@@ -82,7 +85,8 @@ const toggleDoneStatus = (request, response) => {
 
 const deleteTodo = (request, response) => {
   const { listId, todoId } = request.body;
-  request.todosController.deleteTask({ listId, todoId }, () => {
+
+  request.todosController.deleteTodo({ listId, todoId }, () => {
     response.statusCode = 204;
     response.end();
   });
@@ -90,6 +94,7 @@ const deleteTodo = (request, response) => {
 
 const sortTodoList = (request, response) => {
   const { listId, type } = request.body;
+
   request.todosController.updateSort({ listId, type }, () => {
     response.statusCode = 204;
     response.end();

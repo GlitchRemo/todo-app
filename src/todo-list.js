@@ -20,18 +20,18 @@ class TodoList {
     return this.#todoCount;
   }
 
-  sortTodoBy(type) {
+  sortListBy(type) {
     this.#sortBy = type;
   }
 
-  addTask(description, isDone) {
-    const taskId = this.#generateId();
-    const task = new Todo(description, taskId, isDone);
-    this.#todos.push(task);
+  add(description, isDone) {
+    const todoId = this.#generateId();
+    const todo = new Todo(description, todoId, isDone);
+    this.#todos.push(todo);
   }
 
-  markOrUnmarkTask(id, isDone) {
-    this.#todos.find((task) => task.id === id).setStatus(isDone);
+  toggleDoneStatus(id, isDone) {
+    this.#todos.find((todo) => todo.id === id).setStatus(isDone);
   }
 
   get title() {
@@ -46,13 +46,14 @@ class TodoList {
     return this.#sortBy;
   }
 
-  deleteTask(id) {
-    const indexOfTaskToDelete = this.#todos.findIndex((task) => task.id === id);
-    this.#todos.splice(indexOfTaskToDelete, 1);
+  delete(id) {
+    const indexOfTodoToDelete = this.#todos.findIndex((todo) => todo.id === id);
+    this.#todos.splice(indexOfTodoToDelete, 1);
   }
 
   getDetails() {
-    const todos = this.#todos.map((task) => task.getDetails());
+    const todos = this.#todos.map((todo) => todo.getDetails());
+
     return {
       listId: this.#listId,
       title: this.#title,

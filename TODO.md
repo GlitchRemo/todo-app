@@ -3,4 +3,4 @@
 - change remove to bin icon
 - make todo_1 as todo id
 
-- don't store ids in file
+- change names of identities in view and request

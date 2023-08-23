@@ -5,37 +5,37 @@ class TodosController {
   #todoLists;
   #todosStorage;
 
-  constructor(todos, todosStorage) {
-    this.#todoLists = todos;
+  constructor(todoLists, todosStorage) {
+    this.#todoLists = todoLists;
     this.#todosStorage = todosStorage;
   }
 
-  addTodo(title, onSave) {
-    this.#todoLists.addTodo(title);
-    this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
+  addTodoList(title, onSave) {
+    this.#todoLists.add(title);
+    this.#todosStorage.update(this.#todoLists.getDetails(), onSave);
   }
 
-  addTask(task, onSave) {
-    this.#todoLists.addTask(task);
-    this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
+  addTodo(todo, onSave) {
+    this.#todoLists.addTodo(todo);
+    this.#todosStorage.update(this.#todoLists.getDetails(), onSave);
   }
 
-  markOrUnmarkTask({ listId, todoId, isDone }, onSave) {
-    this.#todoLists.markOrUnmarkTask({ listId, todoId, isDone });
-    this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
+  deleteTodo({ listId, todoId }, onSave) {
+    this.#todoLists.deleteTodo(listId, todoId);
+    this.#todosStorage.update(this.#todoLists.getDetails(), onSave);
   }
 
-  deleteTask({ listId, todoId }, onSave) {
-    this.#todoLists.deleteTask(listId, todoId);
-    this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
+  toggleDoneStatus({ listId, todoId, isDone }, onSave) {
+    this.#todoLists.toggleDoneStatus({ listId, todoId, isDone });
+    this.#todosStorage.update(this.#todoLists.getDetails(), onSave);
   }
 
   updateSort({ listId, type }, onSave) {
-    this.#todoLists.sortTodoBy(listId, type);
-    this.#todosStorage.saveTodos(this.#todoLists.getDetails(), onSave);
+    this.#todoLists.sortListBy(listId, type);
+    this.#todosStorage.update(this.#todoLists.getDetails(), onSave);
   }
 
-  getTodos() {
+  getTodosDetails() {
     return this.#todoLists.getDetails();
   }
 }
@@ -43,9 +43,7 @@ class TodosController {
 const createList = ({ listId, title, todos, sortBy }) => {
   const todoList = new TodoList(title, listId, sortBy);
 
-  todos.forEach(({ description, isDone }) =>
-    todoList.addTask(description, isDone)
-  );
+  todos.forEach(({ description, isDone }) => todoList.add(description, isDone));
 
   return todoList;
 };
