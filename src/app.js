@@ -1,23 +1,23 @@
 const express = require("express");
-const { createTodoRoutes } = require("./todo-routes");
+const { createTodoRoutes } = require("./router/todo-routes");
 
 const logRequest = (request, response, next) => {
-  console.log(">", request.method, request.url);
-  next();
+	console.log(">", request.method, request.url);
+	next();
 };
 
 const createApp = () => {
-  const app = express();
+	const app = express();
 
-  app.use(express.json());
-  app.use(express.urlencoded());
-  app.use(logRequest);
+	app.use(express.json());
+	app.use(express.urlencoded());
+	app.use(logRequest);
 
-  createTodoRoutes(app);
+	createTodoRoutes(app);
 
-  app.use(express.static("public"));
+	app.use(express.static("public"));
 
-  return app;
+	return app;
 };
 
 module.exports = { createApp };

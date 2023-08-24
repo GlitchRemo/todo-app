@@ -1,113 +1,120 @@
 * {
-  margin: 0px;
-  padding: 0;
-  font-size: 20px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  box-sizing: border-box;
+	margin: 0px;
+	padding: 0;
+	font-size: 20px;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+	box-sizing: border-box;
 }
 
 main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 30px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 30px;
 }
 
 #page {
-  margin: 2em auto;
-  width: 50%;
-  display: flex;
-  gap: 2em;
-  flex-direction: column;
+	margin: 2em auto;
+	width: 50%;
+	display: flex;
+	gap: 2em;
+	flex-direction: column;
 }
 
 .flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
 }
 
 .flex-column {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
 }
 
 .input-box-container {
-  display: flex;
-  gap: 1em;
+	display: flex;
+	gap: 1em;
 }
 
 .add-button {
-  font-size: 2em;
-  width: 2em;
-  border: none;
-  border-radius: 0.2em;
-  cursor: pointer;
+	font-size: 2em;
+	width: 2em;
+	border: none;
+	border-radius: 0.2em;
+	cursor: pointer;
 }
 
 .list {
-  border-radius: 20px;
-  padding: 1em;
-  border: 1px solid darkgray;
+	border-radius: 20px;
+	padding: 1em;
+	border: 1px solid darkgray;
 }
 
 .input-box {
-  width: 90%;
-  padding: 0 1em;
-  border: none;
-  border-bottom: 1px solid black;
+	width: 90%;
+	padding: 0 1em;
+	border: none;
+	border-bottom: 1px solid black;
 }
 
 .buttons {
-  display: flex;
-  gap: 20px;
-  justify-content: flex-end;
+	display: flex;
+	gap: 20px;
+	justify-content: flex-end;
 }
 
 .title {
-  text-align: center;
+	text-align: center;
 }
 
 #todos-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2em;
+	display: flex;
+	flex-direction: column;
+	gap: 2em;
 }
 
 .todo {
-  padding: 0.5em 4em;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+	padding: 0.5em 4em;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .todos {
-  overflow: scroll;
-  padding: 1em;
+	overflow: scroll;
+	padding: 1em;
+}
+
+.sort-button {
+	padding: 0.5em;
+	border: none;
+	border-radius: 0.2em;
+	opacity: 0.8;
 }
 
 .strike {
-  text-decoration: line-through;
+	text-decoration: line-through;
 }
 
 li:hover {
-  opacity: 50%;
-  cursor: pointer;
-  text-decoration: line-through;
+	opacity: 50%;
+	cursor: pointer;
+	text-decoration: line-through;
 }
 
 .delete-button {
-  width: 1em;
-  cursor: pointer;
+	width: 1em;
+	cursor: pointer;
 }
 
 .checkbox {
-  display: flex;
+	display: flex;
 
-  justify-content: center;
-  align-items: baseline;
-  gap: 0.5em;
+	justify-content: center;
+	align-items: baseline;
+	gap: 0.5em;
 }

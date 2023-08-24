@@ -1,7 +1,7 @@
 {
   "name": "task-glitchremo",
   "version": "1.0.0",
-  "description": "",
+  "description": "Requirement 10:",
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint .",
@@ -15,5 +15,6 @@
   },
   "dependencies": {
     "express": "^4.18.2"
-  }
+  },
+  "keywords": []
 }
