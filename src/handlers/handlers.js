@@ -1,66 +1,76 @@
 const sendTodos = (request, response) => {
-  const { todosController } = request.app;
-  response.json(todosController.getTodosDetails());
+	const { todoLists } = request.app;
+	response.json(todoLists.getDetails());
 };
 
 const addTodoList = (request, response) => {
-  const { todosController } = request.app;
-  const { title } = request.body;
+	const { todoLists, todosStorage } = request.app;
+	const { title } = request.body;
 
-  todosController.addTodoList(title, () => {
-    response.statusCode = 201;
-    response.end();
-  });
+	todoLists.add(title);
+
+	todosStorage.update(todoLists.getDetails(), () => {
+		response.statusCode = 201;
+		response.end();
+	});
 };
 
 const addTodo = (request, response) => {
-  const { todosController } = request.app;
-  const { description } = request.body;
-  const { listId } = request.params;
+	const { todoLists, todosStorage } = request.app;
+	const { description } = request.body;
+	const { listId } = request.params;
 
-  todosController.addTodo({ listId, description }, () => {
-    response.statusCode = 201;
-    response.end();
-  });
+	todoLists.addTodo({ listId, description });
+
+	todosStorage.update(todoLists.getDetails(), () => {
+		response.statusCode = 201;
+		response.end();
+	});
 };
 
 const toggleDoneStatus = (request, response) => {
-  const { todosController } = request.app;
-  const { isDone } = request.body;
-  const { listId, todoId } = request.params;
+	const { todoLists, todosStorage } = request.app;
+	const { isDone } = request.body;
+	const { listId, todoId } = request.params;
 
-  todosController.toggleDoneStatus({ listId, todoId, isDone }, () => {
-    response.statusCode = 204;
-    response.end();
-  });
+	todoLists.toggleDoneStatus({ listId, todoId, isDone });
+
+	todosStorage.update(todoLists.getDetails(), () => {
+		response.statusCode = 204;
+		response.end();
+	});
 };
 
 const deleteTodo = (request, response) => {
-  const { todosController } = request.app;
-  const { listId, todoId } = request.params;
+	const { todoLists, todosStorage } = request.app;
 
-  todosController.deleteTodo({ listId, todoId }, () => {
-    response.statusCode = 204;
-    response.end();
-  });
+	const { listId, todoId } = request.params;
+
+	todoLists.deleteTodo(listId, todoId);
+	todosStorage.update(todoLists.getDetails(), () => {
+		response.statusCode = 204;
+		response.end();
+	});
 };
 
 const sortTodoList = (request, response) => {
-  const { todosController } = request.app;
-  const { type } = request.body;
-  const { listId } = request.params;
+	const { todoLists, todosStorage } = request.app;
 
-  todosController.updateSort({ listId, type }, () => {
-    response.statusCode = 204;
-    response.end();
-  });
+	const { type } = request.body;
+	const { listId } = request.params;
+
+	todoLists.sortListBy(listId, type);
+	todosStorage.update(todoLists.getDetails(), () => {
+		response.statusCode = 204;
+		response.end();
+	});
 };
 
 module.exports = {
-  deleteTodo,
-  toggleDoneStatus,
-  addTodo,
-  addTodoList,
-  sendTodos,
-  sortTodoList,
+	deleteTodo,
+	toggleDoneStatus,
+	addTodo,
+	addTodoList,
+	sendTodos,
+	sortTodoList,
 };
