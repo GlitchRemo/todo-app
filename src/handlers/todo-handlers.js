@@ -10,7 +10,7 @@ const addTodoList = (request, response) => {
 	todoLists.add(title);
 
 	todoStorage.update(todoLists.getDetails(), () => {
-		response.statusCode = 201;
+		response.statusCode = 204;
 		response.send();
 	});
 };

@@ -8,7 +8,6 @@ describe("Todo", () => {
 			const todoId = "todo_1";
 			const description = "buy milk";
 			const isDone = true;
-
 			const todo = new Todo(description, todoId);
 			todo.setStatus(isDone);
 
@@ -29,11 +28,11 @@ describe("Todo", () => {
 	});
 
 	describe("getDetails", () => {
-		it("should give the id of a todo", () => {
+		it("should give the details of a todo", () => {
 			const todoId = "todo_1";
 			const description = "Buy milk";
-
 			const todo = new Todo(description, todoId);
+
 			const todoDetails = { todoId, description, isDone: false };
 
 			assert.deepStrictEqual(todo.getDetails(), todoDetails);
