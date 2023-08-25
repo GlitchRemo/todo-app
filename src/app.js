@@ -1,10 +1,6 @@
 const express = require("express");
 const { createTodoRoutes } = require("./router/todo-routes");
-
-const logRequest = (request, response, next) => {
-	console.log(">", request.method, request.url);
-	next();
-};
+const { logRequest } = require("./middlewares/logger");
 
 const createApp = () => {
 	const app = express();

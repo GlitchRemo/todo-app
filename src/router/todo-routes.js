@@ -1,4 +1,4 @@
-const handlers = require("../handlers/handlers");
+const handlers = require("../handlers/todo-handlers");
 
 const createTodoRoutes = (app) => {
 	app.get("/todos", handlers.sendTodos);
