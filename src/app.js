@@ -2,7 +2,7 @@ const express = require("express");
 const { createTodoRoutes } = require("./router/todo-routes");
 const { logRequest } = require("./middlewares/logger");
 
-const createApp = () => {
+const createApp = (todoLists, todoStorage) => {
 	const app = express();
 
 	app.use(express.json());
@@ -12,6 +12,9 @@ const createApp = () => {
 	createTodoRoutes(app);
 
 	app.use(express.static("public"));
+
+	app.todoLists = todoLists;
+	app.todoStorage = todoStorage;
 
 	return app;
 };
