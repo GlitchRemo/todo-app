@@ -1,20 +1,22 @@
 {
-  "name": "task-glitchremo",
-  "version": "1.0.0",
-  "description": "Requirement 10:",
-  "main": "index.js",
-  "scripts": {
-    "lint": "npx eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --watch main.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "eslint": "^8.45.0"
-  },
-  "dependencies": {
-    "express": "^4.18.2"
-  },
-  "keywords": []
+	"name": "task-glitchremo",
+	"version": "1.0.0",
+	"description": "Requirement 10:",
+	"main": "index.js",
+	"scripts": {
+		"lint": "npx eslint .",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node --watch main.js",
+		"coverage": "nyc node --test"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"eslint": "^8.45.0"
+	},
+	"dependencies": {
+		"express": "^4.18.2",
+		"nyc": "^15.1.0"
+	},
+	"keywords": []
 }

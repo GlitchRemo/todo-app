@@ -4,65 +4,65 @@ const sendTodos = (request, response) => {
 };
 
 const addTodoList = (request, response) => {
-	const { todoLists, todosStorage } = request.app;
+	const { todoLists, todoStorage } = request.app;
 	const { title } = request.body;
 
 	todoLists.add(title);
 
-	todosStorage.update(todoLists.getDetails(), () => {
+	todoStorage.update(todoLists.getDetails(), () => {
 		response.statusCode = 201;
-		response.end();
+		response.send();
 	});
 };
 
 const addTodo = (request, response) => {
-	const { todoLists, todosStorage } = request.app;
+	const { todoLists, todoStorage } = request.app;
 	const { description } = request.body;
 	const { listId } = request.params;
 
 	todoLists.addTodo({ listId, description });
 
-	todosStorage.update(todoLists.getDetails(), () => {
+	todoStorage.update(todoLists.getDetails(), () => {
 		response.statusCode = 201;
-		response.end();
+		response.send();
 	});
 };
 
 const toggleDoneStatus = (request, response) => {
-	const { todoLists, todosStorage } = request.app;
+	const { todoLists, todoStorage } = request.app;
 	const { isDone } = request.body;
 	const { listId, todoId } = request.params;
 
 	todoLists.toggleDoneStatus({ listId, todoId, isDone });
 
-	todosStorage.update(todoLists.getDetails(), () => {
+	todoStorage.update(todoLists.getDetails(), () => {
 		response.statusCode = 204;
-		response.end();
+		response.send();
 	});
 };
 
 const deleteTodo = (request, response) => {
-	const { todoLists, todosStorage } = request.app;
-
+	const { todoLists, todoStorage } = request.app;
 	const { listId, todoId } = request.params;
 
 	todoLists.deleteTodo(listId, todoId);
-	todosStorage.update(todoLists.getDetails(), () => {
+
+	todoStorage.update(todoLists.getDetails(), () => {
 		response.statusCode = 204;
-		response.end();
+		response.send();
 	});
 };
 
 const sortTodoList = (request, response) => {
-	const { todoLists, todosStorage } = request.app;
-
+	const { todoLists, todoStorage } = request.app;
 	const { type } = request.body;
 	const { listId } = request.params;
 
 	todoLists.sortListBy(listId, type);
-	todosStorage.update(todoLists.getDetails(), () => {
+
+	todoStorage.update(todoLists.getDetails(), () => {
 		response.statusCode = 204;
-		response.end();
+		response.send();
 	});
 };
 

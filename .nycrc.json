@@ -1,0 +1,7 @@
+{
+	"check-coverage": true,
+	"statements": 90,
+	"reporter": ["text", "html"],
+	"all": true,
+	"exclude": ["main.js", "coverage/*", ".eslint*", "public/*"]
+}

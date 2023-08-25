@@ -181,6 +181,7 @@ class View {
 
 		const titleElement = this.#createTitleElement(title, listId);
 		const inputSection = this.#createInputSection(listId);
+
 		listSection.append(titleElement, inputSection);
 		listSection.classList.add("flex-column", "list");
 
@@ -196,14 +197,14 @@ class View {
 		return listSection;
 	}
 
-	#removeLists() {
+	#removeChildren() {
 		[...this.#todosContainer.children].forEach((child) =>
 			this.#todosContainer.removeChild(child)
 		);
 	}
 
 	render(todosData) {
-		this.#removeLists();
+		this.#removeChildren();
 
 		todosData.forEach((todoList) => {
 			const listElement = this.#createListSection(todoList);
