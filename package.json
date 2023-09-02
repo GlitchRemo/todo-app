@@ -2,7 +2,7 @@
 	"name": "task-glitchremo",
 	"version": "1.0.0",
 	"description": "Requirement 10:",
-	"main": "index.js",
+	"main": "main.js",
 	"scripts": {
 		"lint": "npx eslint .",
 		"test": "node --test",
@@ -11,11 +11,12 @@
 	},
 	"author": "",
 	"license": "ISC",
-	"devDependencies": {
-		"eslint": "^8.45.0"
-	},
 	"dependencies": {
-		"express": "^4.18.2",
+		"express": "^4.18.2"
+	},
+	"devDependencies": {
+		"eslint": "^8.45.0",
+		"lint": "^0.8.19",
 		"nyc": "^15.1.0",
 		"supertest": "^6.3.3"
 	},
