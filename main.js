@@ -9,7 +9,7 @@ const main = () => {
 	const todoStorage = new TodoStorage(fs, STORAGE_PATH);
 	const todoLists = initialize(todoStorage.readTodos());
 
-	const PORT = 8000;
+	const PORT = process.env.PORT || 8000;
 	const app = createApp(todoLists, todoStorage);
 
 	app.listen(PORT, () => console.log("Server is listening on PORT:", PORT));
