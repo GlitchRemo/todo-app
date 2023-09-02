@@ -1,4 +1,7 @@
 {
+	"engines": {
+		"node": "20.5.1"
+	},
 	"name": "task-glitchremo",
 	"version": "1.0.0",
 	"description": "Requirement 10:",
@@ -6,7 +9,8 @@
 	"scripts": {
 		"lint": "npx eslint .",
 		"test": "node --test",
-		"start": "node --watch main.js",
+		"start": "node main.js",
+		"dev": "node --watch main.js",
 		"coverage": "nyc node --test"
 	},
 	"author": "",
