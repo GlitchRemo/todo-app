@@ -2,7 +2,7 @@ class TodoStorage {
 	#storagePath;
 	#fs;
 
-	constructor(fs, storagePath = "") {
+	constructor(fs, storagePath) {
 		this.#storagePath = storagePath;
 		this.#fs = fs;
 	}

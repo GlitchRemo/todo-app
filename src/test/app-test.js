@@ -1,4 +1,3 @@
-const fs = require("fs");
 const request = require("supertest");
 const { describe, it } = require("node:test");
 const { createApp } = require("../app");
@@ -6,7 +5,11 @@ const { TodoLists } = require("../models/todo-lists");
 const { TodoList } = require("../models/todo-list");
 const { TodoStorage } = require("../todo-storage");
 
-const getTodos = (app, todosData, done) => {
+const fs = {
+	writeFile: (filePath, content, onSave) => onSave(),
+};
+
+const testGetTodos = (app, todosData, done) => {
 	return () => {
 		request(app)
 			.get("/todos")
@@ -20,17 +23,10 @@ const getTodos = (app, todosData, done) => {
 describe("App", () => {
 	describe("GET /todos", () => {
 		it("should send no todo initially", (_, done) => {
-			const app = createApp();
-
 			const todoLists = new TodoLists();
-			app.todoLists = todoLists;
+			const app = createApp(todoLists);
 
-			request(app)
-				.get("/todos")
-				.expect(200)
-				.expect("content-type", /application\/json/)
-				.expect([])
-				.end(done);
+			testGetTodos(app, [], done)();
 		});
 
 		it("should send all the todos", (_, done) => {
@@ -86,12 +82,12 @@ describe("App", () => {
 				.post("/todos")
 				.send({ title: "Personal" })
 				.expect(204)
-				.end(getTodos(app, todosData, done));
+				.end(testGetTodos(app, todosData, done));
 		});
 	});
 
 	describe("POST /todo-lists/list_1/todos", () => {
-		it("should add a todo", (_, done) => {
+		it("should add a todo to list_1", (_, done) => {
 			const todosData = [
 				{
 					listId: "list_1",
@@ -113,7 +109,41 @@ describe("App", () => {
 				.post("/todo-lists/list_1/todos")
 				.send({ description: "Review Code" })
 				.expect(204)
-				.end(getTodos(app, todosData, done));
+				.end(testGetTodos(app, todosData, done));
+		});
+	});
+
+	describe("PATCH /todo-lists/list_1/todos/todo_1", () => {
+		it("should set done status of a todo_1 of list_1", (_, done) => {
+			const listId = "list_1";
+			const todoId = "todo_1";
+			const title = "Office";
+			const description = "Review Code";
+			const isDone = true;
+
+			const todosData = [
+				{
+					listId,
+					title,
+					sortBy: { alphabetic: false, date: true, status: false },
+					todos: [{ todoId, description, isDone }],
+				},
+			];
+
+			const todoList = new TodoList(title, listId);
+			const todoLists = new TodoLists([todoList]);
+			const todoStorage = new TodoStorage(fs);
+
+			todoLists.addTodo({ listId, description });
+			todoLists.toggleDoneStatus({ todoId, listId, isDone });
+
+			const app = createApp(todoLists, todoStorage);
+
+			request(app)
+				.patch(`/todo-lists/${listId}/todos/${todoId}`)
+				.send({ isDone })
+				.expect(204)
+				.end(testGetTodos(app, todosData, done));
 		});
 	});
 });
